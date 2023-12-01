@@ -11,7 +11,7 @@ const SimpleHeader = ({ headerText }) => {
     <View style={styles.header}>
       <View style={styles.row}>
         <TouchableOpacity style={styles.userIcon}>
-          <Image source={require('../assets/Avatar.png')} style={styles.avatar} />
+          <Image source={require("../assets/images/avatar.png")} style={styles.avatar} />
         </TouchableOpacity>
         <Text style={styles.title}>{headerText}</Text>
         <View></View>

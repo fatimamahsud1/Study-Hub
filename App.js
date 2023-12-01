@@ -1,6 +1,6 @@
 // App.js
 import React from 'react';
-import StackNavigator from './src/Navigations/StackNavigator';
+import StackNavigator from './src/navigations/StackNavigator';
 import Mcqs from './src/screens/Mcqs';
 
 const App = () => {
