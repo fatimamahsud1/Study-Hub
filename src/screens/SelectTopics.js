@@ -3,219 +3,47 @@
 import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import SimpleHeader from '../components/SimpleHeader';
 
-const topics = [
-  'abiotic',
-  'active transport',
-  'adaptation',
-  'aerobic bacteria',
-  'alimentary canal',
-  'allele',
-  'allopatric speciation',
-  'amphipathic',
-  'anabolism',
-  'anaerobic',
-  'anaerobic respiration',
-  'analogous',
-  'analogous structures',
-  'anatomy',
-  'angiosperm',
-  'animal',
-  'animal cell',
-  'antagonistic muscle',
-  'antigen',
-  'apoenzyme',
-  'asexual reproduction',
-  'assimilation',
-  'autocrine signaling',
-  'autotroph',
-  'axon hillock',
-  'axon terminal',
-  'bacteria',
-  'balanced diet',
-  'base-pairing rule',
-  'benign',
-  'biennial',
-  'binary fission',
-  'binomial nomenclature',
-  'biodiversity',
-  'biological system',
-  'biology',
-  'biome',
-  'biosphere',
-  'biotic',
-  'biotic factor',
-  'biotic potential',
-  'biuret test',
-  'bivalent',
-  'body fluid',
-  'bolus injection',
-  'bone matrix',
-  'book lungs',
-  'botany',
-  'buck’s traction',
-  'budding',
-  'carbon fixation',
-  'carrier protein',
-  'carrying capacity',
-  'cell',
-  'cell morphology',
-  'cell wall',
-  'cellular respiration',
-  'chemiosmosis',
-  'chloroplast',
-  'chordata',
-  'chromatin',
-  'chromosomal mutation',
-  'chromosome',
-  'class',
-  'codominance',
-  'codon',
-  'coenzyme',
-  'cohesion',
-  'commensalism',
-  'complete dominance',
-  'concentration gradient',
-  'condyloid joint',
-  'convergent evolution',
-  'convoluted',
-  'coronavirus COVID-19',
-  'cross-linking',
-  'cytokinesis',
-  'cytoplasm',
-  'darwinian fitness',
-  'deciduous forest',
-  'decomposer',
-  'definitive host',
-  'dehydration reaction',
-  'demographic transition',
-  'dense irregular connective tissue',
-  'dense regular connective tissue',
-  'density-dependent factor',
-  'density-dependent limiting factor',
-  'deoxyribonucleic acid',
-  'desiccation',
-  'diaphoresis',
-  'diarthrodial joint',
-  'dichotomous',
-  'differentiation',
-  'diffusion',
-  'diploid',
-  'disruptive selection',
-  'divergent evolution',
-  'dominant',
-  'dominant species',
-  'ecological niche',
-  'ecosystem',
-  'ecosystem diversity',
-  'element',
-  'endemic',
-  'endocytosis',
-  'endomembrane system',
-  'endosymbiosis',
-  'endosymbiotic theory',
-  'energy coupling',
-  'environment',
-  'environmental resistance',
-  'epidermis',
-  'epistasis',
-  'equilibrium',
-  'eukaryote',
-  'eukaryotic cells',
-  'evolution',
-  'exon',
-  'exotic species',
-  'exudate',
-  'facilitated diffusion',
-  'facultative anaerobe',
-  'family',
-  'family traits',
-  'fastidious',
-  'fecundity',
-  'feedback mechanism',
-  'female',
-  'fermentation',
-  'fibrinous exudate',
-  'fibrocartilage',
-  'filtration',
-  'first-order kinetics',
-  'fitness',
-  'flaccid',
-  'flora',
-  'fluid mosaic model',
-  'focus',
-  'follicle-stimulating hormone',
-  'fragmentation',
-  'frameshift mutation',
-  'fundamental niche',
-  'fungi',
-  'gamete',
-  'ganglia',
-  'gene',
-  'genetic diversity',
-  'genetic drift',
-  'genetic material',
-  'genetics',
-  'genome',
-  'genotype',
-  'genotypic ratio',
-  'genus',
-  'glucose',
-  'glycerol',
-  'glycogenolysis',
-  'glycolipid',
-  'glycolysis',
-  'golgi apparatus',
-  'graded potential',
-  'gram-positive bacilli',
-  'gram-positive cocci',
-  'group translocation',
-  'growth',
-  'guanine',
-  'haploid',
-  'heredity',
-  'hermaphrodite',
-  'heterotroph',
-  'heterozygous',
-  'homeostasis',
-  'homo sapiens sapiens',
-  'homogeneous',
-  'homologous',
-  'homologous chromosome',
-  'homologous structures',
-  'homozygous',
-  'host cell',
-  'hyaline cartilage',
-  'hydrophilic',
-  'hydrophobic',
-  'hyperosmotic',
-  'hypersensitivity',
-  'hypertonic',
-  'hypomelanism',
-  'hypothesis',
-  'hypotonic',
-  'hypotonic solution',
-  'hypotonicity',
-];
+const topicsWithUrls = {
+  array: 'https://www.geeksforgeeks.org/data-structure-gq/top-mcqs-on-array-data-structure-with-answers/',
+  string: 'https://www.geeksforgeeks.org/c-language-2-gq/string-gq/',
+  'linked-list': 'https://www.geeksforgeeks.org/data-structure-gq/top-mcqs-on-linked-list-data-structure-with-answers/',
+  stack: 'https://www.geeksforgeeks.org/data-structure-gq/top-mcqs-on-stack-data-strcuture-with-answers/',
+  queue: 'https://www.geeksforgeeks.org/data-structure-gq/top-mcqs-on-queue-data-structure-with-answers/',
+  tree: 'https://www.geeksforgeeks.org/tree-22648/',
+  heap: 'https://www.geeksforgeeks.org/data-structure-gq/top-mcqs-on-heap-data-strcuture-with-answers/',
+  hashing: 'https://www.geeksforgeeks.org/data-structure-gq/top-mcqs-on-hash-data-strcuture-with-answers/',
+  'shortest-paths-in-graph': 'https://www.geeksforgeeks.org/algorithms-gq/top-mcqs-on-shortest-paths-in-graphs-with-answers/?ref=graph_lp',
+  'graph-traversals': 'https://www.geeksforgeeks.org/algorithms-gq/top-mcqs-on-graph-traversals-with-answers/?ref=graph_lp',
+  graph: 'https://www.geeksforgeeks.org/data-structure-gq/top-mcqs-on-graph-data-strcuture-with-answers/?ref=graph_lp',
+  'minimum-spanning-tree-mst': 'https://www.geeksforgeeks.org/algorithms-gq/top-mcqs-on-minimum-spanning-tree-mst-in-graphs-with-answers/?ref=graph_lp',
+  matrix: 'https://www.geeksforgeeks.org/matrix-dsa-self-paced-quiz/',
+  'np-complete-complexity': 'https://www.geeksforgeeks.org/algorithms-gq/top-mcqs-on-np-complete-complexity-with-answers/',
+  backtracking: 'https://www.geeksforgeeks.org/algorithms-gq/top-mcqs-on-backtracking-algorithm-with-answers/',
+  'dynamic-programming': 'https://www.geeksforgeeks.org/algorithms-gq/top-mcqs-on-dynamic-programming-with-answers/',
+};
 
 const SelectTopics = () => {
   const navigation = useNavigation();
 
   const handleTopicSelection = (topic) => {
-    navigation.navigate('StartQuiz', { selectedTopic: topic });
+    const url = topicsWithUrls[topic];
+    navigation.navigate('StartQuiz', { selectedTopic: topic, topicUrl: url });
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.headerText}>Select Topics</Text>
+     <SimpleHeader headerText="Select Quiz Topic" showBackButton={true} />
+
       <ScrollView style={styles.scrollContainer}>
-        {topics.map((topic) => (
+        {Object.keys(topicsWithUrls).map((topic) => (
           <TouchableOpacity
             key={topic}
             style={styles.topicItem}
             onPress={() => handleTopicSelection(topic)}
           >
-            <Text style={styles.topicText}>{topic}</Text>
+            <Text style={styles.topicText}>{capitalizeFirstLetter(topic)}</Text>
           </TouchableOpacity>
         ))}
       </ScrollView>
@@ -223,16 +51,14 @@ const SelectTopics = () => {
   );
 };
 
+const capitalizeFirstLetter = (str) => {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+};
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
     alignItems: 'center',
-  },
-  headerText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 20,
   },
   scrollContainer: {
     width: '100%',
@@ -247,6 +73,8 @@ const styles = StyleSheet.create({
   },
   topicText: {
     fontSize: 16,
+    color:'black'
+    // textTransform: 'capitalize', // Leave this commented if hyphens should not be capitalized
   },
 });
 

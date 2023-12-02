@@ -7,17 +7,55 @@ import { RadioButton } from 'react-native-paper';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-const Mcqs = ({ route }) => {
+const McqsScreen = ({ route, navigation }) => {
   const [questions, setQuestions] = useState([]);
   const [selectedOptions, setSelectedOptions] = useState({});
   const [shuffledQuestions, setShuffledQuestions] = useState([]);
   const [userScore, setUserScore] = useState(null);
   const [correctAnswers, setCorrectAnswers] = useState({});
   const [timer, setTimer] = useState({ minutes: 0, seconds: 0 });
+  const [feedbackData, setFeedbackData] = useState({ correct: 0, incorrect: 0 });
 
   const selectedTopic = route.params?.selectedTopic || 'Default Topic';
+  let interval; // Declare interval variable
 
   useEffect(() => {
+    const scrapeQuestions = async () => {
+      try {
+        const response = await axios.get(`https://www.geeksforgeeks.org/data-structure-gq/top-mcqs-on-binary-trees-data-structure-with-answers/`);
+        const $ = cheerio.load(response.data);
+
+        const questions = [];
+        const correctAnswers = [];
+
+        $('div.mtq_question_text').each((index, questionElement) => {
+          const questionText = $(questionElement).text().trim();
+          const choices = [];
+          let correctOptionText = null;
+
+          $(`tr[id^="mtq_row-${index + 1}-"]`).each((index, choiceElement) => {
+            const choiceText = $(choiceElement).find('div.mtq_answer_text').text().trim();
+            choices.push(choiceText);
+
+            if ($(choiceElement).find('div.mtq_correct_marker').length > 0) {
+              correctOptionText = choiceText;
+            }
+          });
+
+          const correctIndex = choices.findIndex((choice) => choice === correctOptionText);
+
+          questions.push({ text: questionText, choices, correctIndex });
+          correctAnswers.push(correctOptionText);
+        });
+
+        setQuestions(questions);
+        setShuffledQuestions(shuffleArray(questions));
+        setCorrectAnswers(correctAnswers);
+      } catch (error) {
+        console.error('Error fetching data:', error.message);
+      }
+    };
+
     const shuffleArray = (array) => {
       const shuffledArray = [...array];
       for (let i = shuffledArray.length - 1; i > 0; i--) {
@@ -27,49 +65,11 @@ const Mcqs = ({ route }) => {
       return shuffledArray;
     };
 
-    const scrapeQuestions = async () => {
-      try {
-        const response = await axios.get(`https://www.biologyonline.com/${selectedTopic}`);
-
-        const $ = cheerio.load(response.data);
-
-        const scrapedQuestions = [];
-
-        $('.mlw_qmn_new_question').each((index, questionElement) => {
-          const questionText = $(questionElement).text().trim();
-
-          const choices = [];
-          const choicesContainer = $(questionElement).closest('.quiz_section').find('.qmn_mc_answer_wrap');
-
-          choicesContainer.each((index, choiceElement) => {
-            const choiceText = $(choiceElement).find('label').text().trim();
-            choices.push(choiceText);
-          });
-
-          scrapedQuestions.push({ text: questionText, choices });
-        });
-
-        const shuffledArray = shuffleArray(scrapedQuestions);
-        setQuestions(shuffledArray);
-        setShuffledQuestions(shuffledArray);
-
-        // Initialize correctAnswers state
-        const initialCorrectAnswers = {};
-        shuffledArray.forEach((_, index) => {
-          initialCorrectAnswers[index] = null;
-        });
-        setCorrectAnswers(initialCorrectAnswers);
-      } catch (error) {
-        console.error('Error fetching data:', error.message);
-      }
-    };
-
     scrapeQuestions();
   }, [selectedTopic]);
 
   useEffect(() => {
-    // Start the timer
-    const interval = setInterval(() => {
+    interval = setInterval(() => {
       setTimer((prevTimer) => {
         const newSeconds = prevTimer.seconds + 1;
         const newMinutes = Math.floor(newSeconds / 60);
@@ -80,48 +80,52 @@ const Mcqs = ({ route }) => {
       });
     }, 1000);
 
-    return () => clearInterval(interval); // Cleanup interval on component unmount
+    return () => clearInterval(interval);
   }, []);
 
   const handleSubmitQuiz = () => {
-    // Stop the timer
     clearInterval(interval);
 
-    let score = 0;
-    const newCorrectAnswers = { ...correctAnswers };
+    let correctCount = 0;
+    let incorrectCount = 0;
+    const newFeedbackData = { correct: 0, incorrect: 0 };
 
     shuffledQuestions.forEach((question, index) => {
-      if (selectedOptions[index] === question.correctIndex) {
-        score++;
+      const selectedAnswerIndex = selectedOptions[index];
+      const correctAnswerIndex = question.correctIndex;
+
+      if (selectedAnswerIndex === correctAnswerIndex) {
+        correctCount++;
+      } else {
+        incorrectCount++;
       }
-      newCorrectAnswers[index] = question.correctIndex;
     });
 
-    setUserScore(score);
-    setCorrectAnswers(newCorrectAnswers);
+    setUserScore(correctCount);
+    setFeedbackData({ correct: correctCount, incorrect: incorrectCount });
 
-    // Navigate to the feedback screen and pass the necessary information
     navigation.navigate('FeedbackScreen', {
-      userScore: score,
-      correctAnswers: newCorrectAnswers,
-      shuffledQuestions,
+      userScore: correctCount,
+      correctAnswers,
+      totalQuestions: shuffledQuestions.length,
       elapsedMinutes: timer.minutes,
       elapsedSeconds: timer.seconds,
+      feedbackData: newFeedbackData,
     });
   };
 
   return (
-    <ScrollView>
+    <ScrollView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerText}>Time Elapsed: {timer.minutes} minutes {timer.seconds} seconds</Text>
       </View>
       {shuffledQuestions.map((question, questionIndex) => (
-        <View key={questionIndex} style={{ margin: 10 }}>
-          <Text style={{ fontSize: 18, color: '#022150', fontWeight: 'bold', marginBottom: 10 }}>{question.text}</Text>
+        <View key={questionIndex} style={styles.questionContainer}>
+          <Text style={styles.questionText}>{`Question ${questionIndex + 1}: ${question.text}`}</Text>
           {question.choices.map((choice, choiceIndex) => (
             <TouchableOpacity
               key={choiceIndex}
-              style={{ flexDirection: 'row', color: '#022150', alignItems: 'center', marginVertical: 5 }}
+              style={styles.choiceContainer}
               onPress={() => {
                 const newSelectedOptions = { ...selectedOptions };
                 newSelectedOptions[questionIndex] = choiceIndex;
@@ -137,7 +141,7 @@ const Mcqs = ({ route }) => {
                   setSelectedOptions(newSelectedOptions);
                 }}
               />
-              <Text style={{ marginLeft: 10 }}>{`${choice}`}</Text>
+              <Text style={styles.choiceText}>{`${choice}`}</Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -150,23 +154,44 @@ const Mcqs = ({ route }) => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#f0f0f0',
+  },
   header: {
     backgroundColor: '#022150',
     padding: 10,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    height: windowHeight * 0.1,
     alignItems: 'center',
   },
   headerText: {
     color: 'white',
-    fontSize: 12,
-    margin: 4,
+    fontSize: 16,
+  },
+  questionContainer: {
+    margin: 10,
+    padding: 10,
+    backgroundColor: 'white',
+    borderRadius: 8,
+    elevation: 3,
+  },
+  questionText: {
+    fontSize: 16,
+    color: '#022150',
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  choiceContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 5,
+  },
+  choiceText: {
+    marginLeft: 10,
+    color: '#022150',
   },
   buttonContainer: {
     margin: 20,
-    color: '#022150',
   },
 });
 
-export default Mcqs;
+export default McqsScreen;

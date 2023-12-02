@@ -1,11 +1,16 @@
-// App.js
+
+
+
+
+
+
+
 import React from 'react';
 import StackNavigator from './src/navigations/StackNavigator';
-import Mcqs from './src/screens/Mcqs';
 
 const App = () => {
-  return  <StackNavigator />;
-    // <Mcqs/>
+  return <StackNavigator />;
+   
 
 };
 

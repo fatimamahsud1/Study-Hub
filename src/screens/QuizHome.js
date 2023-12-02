@@ -4,6 +4,7 @@ import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import Header from '../components/Header';
 import Button from '../components/Button';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import SimpleHeader from '../components/SimpleHeader';
 
 const QuizHome = () => {
   const navigation = useNavigation();
@@ -19,23 +20,22 @@ const QuizHome = () => {
   };
 
   const navigateToChooseDifficulty = () => {
-    navigation.navigate('ChooseDifficulty');
+    navigation.navigate('DifficultyLevelsScreen');
   };
 
   return (
     <>
-      <Header headerText="Assessments" />
+      <SimpleHeader headerText="Assessments" />
       <View style={styles.container}>
         <Text style={styles.text}>Test Yourself</Text>
         <Text style={styles.text1}>
-          Test yourself by attempting our assessments prepared by experienced tutors
+          Test yourself by attempting our assessments prepared by experienced tutors!
         </Text>
         <View style={styles.container2}>
-          <Button onPress={navigateToChooseSubject} text="Choose Subject " bgColor="#FE8C00" textColor="white" />
+          <Button onPress={navigateToChooseDifficulty} text="Choose Difficulty Level " bgColor="#FE8C00" textColor="white" />
           {selectedSubject && <Text style={styles.selectedInfoText}>Subject Chosen: {selectedSubject}</Text>}
           {selectedDifficulty && <Text style={styles.selectedInfoText1}>Difficulty Level Chosen: {selectedDifficulty}</Text>}
           <TouchableOpacity onPress={navigateToChooseDifficulty}>
-            <Text style={styles.clickableText}>Select Difficulty Level</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -49,21 +49,23 @@ const QuizHome = () => {
 
 const styles = StyleSheet.create({
   container: {
-    width: '90%',
-    height: '45%',
+    width: '95%',
+    height: '50%',
     backgroundColor: '#022150',
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50,
     borderBottomRightRadius: 50,
     borderBottomLeftRadius: 50,
-    margin: 20,
+    margin: 10,
+    marginTop:30,
+    marginBottom:20
   },
   container2: {
     width: '100%',
     height: '85%', // Adjusted the height
     alignItems: 'center',
     justifyContent: 'flex-start',
-    marginTop: 20,
+    marginTop: 30,
   },
   container3: {
     width: '100%',
@@ -77,7 +79,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'white',
     marginLeft: 30,
-    marginTop: 30,
+    marginTop: 60,
+    marginBottom:20
   },
   text1: {
     fontSize: 20,

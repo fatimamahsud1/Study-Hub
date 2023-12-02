@@ -1,13 +1,12 @@
-// ChooseDifficulty.js
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import Header from '../components/Header';
 import { useNavigation } from '@react-navigation/native';
+import SimpleHeader from '../components/SimpleHeader';
 import Button from '../components/Button';
 
 const difficultyLevels = ['Easy', 'Medium', 'Hard'];
 
-const ChooseDifficulty = ({ route }) => {
+const DifficultyLevelsScreen = ({ route }) => {
   const [selectedDifficulty, setSelectedDifficulty] = useState(null);
   const navigation = useNavigation();
 
@@ -16,23 +15,34 @@ const ChooseDifficulty = ({ route }) => {
   };
 
   const navigateToQuizHome = () => {
-    navigation.navigate('QuizzHome', {
-      selectedSubject: route.params?.selectedSubject || null,
-      selectedDifficulty,
-    });
+    if (selectedDifficulty === 'Easy') {
+      // Navigate to the 'SelectedTopics' screen for 'Easy' difficulty
+      navigation.navigate('EasyLevelScreen', {
+        selectedSubject: route.params?.selectedSubject || null,
+        selectedDifficulty,
+      });
+    } else {
+      // Navigate to the 'QuizzHome' screen for other difficulty levels
+      navigation.navigate('SelectTopics', {
+        selectedSubject: route.params?.selectedSubject || null,
+        selectedDifficulty,
+      });
+    }
   };
-  
-  
 
   return (
     <>
       <View style={styles.container}>
-        <Header headerText="Choose Difficulty" showBackButton={true} />
+        <SimpleHeader headerText="Choose Difficulty" showBackButton={true} />
+
         <View style={styles.difficultyContainer}>
           {difficultyLevels.map((difficulty) => (
             <TouchableOpacity
               key={difficulty}
-              style={[styles.difficultyItem, selectedDifficulty === difficulty && styles.selectedDifficulty]}
+              style={[
+                styles.difficultyItem,
+                selectedDifficulty === difficulty && styles.selectedDifficulty,
+              ]}
               onPress={() => handleDifficultySelection(difficulty)}
             >
               <Text style={styles.difficultyText}>{difficulty}</Text>
@@ -40,13 +50,15 @@ const ChooseDifficulty = ({ route }) => {
             </TouchableOpacity>
           ))}
         </View>
+
         <View style={styles.btn}>
-          <Button onPress={navigateToQuizHome} text="Done" bgColor="#022150" textColor="white" />
+          <Button onPress={navigateToQuizHome} text="Done" style={styles.button} />
         </View>
       </View>
     </>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
@@ -59,35 +71,34 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 10,
+    padding: 15,
     borderBottomWidth: 1,
-    borderBottomColor: 'black', // Updated to black
+    borderBottomColor: '#ccc',
   },
   selectedDifficulty: {
     backgroundColor: '#e6e6e6',
   },
   difficultyText: {
     fontSize: 16,
-    color: 'black', // Updated to black
+    color: 'black',
   },
   tick: {
     color: 'green',
     fontSize: 18,
   },
   btn: {
-    height: '40%',
-    alignItems: 'center',
+    marginTop: 20,
+    width:'100%',
+    height:'45%',
+    justifyContent:'flex-start',
+    alignItems:'center',
   },
   button: {
-    backgroundColor: '#022150',
+    backgroundColor: '#4CAF50', // Green color as an example
     padding: 15,
+    borderRadius: 8,
     alignItems: 'center',
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
   },
 });
 
-export default ChooseDifficulty;
+export default DifficultyLevelsScreen;
