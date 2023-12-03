@@ -103,10 +103,9 @@ const Signin = ({navigation}) => {
       <TouchableOpacity
               style={styles.signIn}
               onPress={() => {
-                navigation.navigate('Signin');
+                navigation.navigate('QuizHome');
               }}>
-              <LinearGradient
-                colors={['#5872A6', '#282534']}
+              <View
                 style={styles.signIn}>
                 <Text
                   style={[
@@ -117,13 +116,13 @@ const Signin = ({navigation}) => {
                   ]}>
                   Sign In
                 </Text>
-              </LinearGradient>
+              </View>
             </TouchableOpacity>
-            <Text style={{fontSize:15, marginTop:5, alignSelf:'flex-end', color:'#8E8E8E'}} onPress={()=>{navigation.navigate('ForgotPassword')}}>
+            <Text style={{color: '#969AA8', fontSize: 15, fontWeight:'bold', marginTop:5, alignSelf:'flex-end'}} onPress={()=>{navigation.navigate('ForgotPassword')}}>
             Forgot Password?
             </Text>
-            <Text style={{marginVertical: 10, color: '#969AA8', fontSize: 12, marginTop:30,}}>
-              <Text style={{color:'#EFEFEF'}}> ---------------------- </Text>  Or Sign Up with   <Text style={{color:'#EFEFEF'}}> ---------------------- </Text>
+            <Text style={{marginVertical: 10, color: '#969AA8', fontSize: 12, fontWeight:'bold', marginTop:30,}}>
+              <Text style={{color:'#EFEFEF'}}> ---------------------- </Text>  Or Sign In with   <Text style={{color:'#EFEFEF'}}> ---------------------- </Text>
             </Text>
 
             <View
@@ -143,9 +142,9 @@ const Signin = ({navigation}) => {
                 <Text
                   style={{
                     marginHorizontal: 10,
-                    color: '#282534',
+                    color: '#79869F',
                     fontSize: 16,
-                    fontWeight:'200'
+                    fontWeight:'600'
                   }}>
                   Sign In With Google
                 </Text>
@@ -166,9 +165,9 @@ const Signin = ({navigation}) => {
                 <Text
                   style={{
                     marginHorizontal: 10,
-                    color: '#282534',
+                    color: '#79869F',
                     fontSize: 16,
-                    fontWeight:'200'
+                    fontWeight:'600'
                   }}>
                   Sign In With Facebook
                 </Text>
@@ -180,7 +179,7 @@ const Signin = ({navigation}) => {
 
 const styles = StyleSheet.create({
   text_footer: {
-    color: '#05375a',
+    color: 'black',
     fontSize: 18,
   },
   action: {
@@ -213,20 +212,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   activeButton: {
-    backgroundColor: '#282534',
+    backgroundColor: '#022150',
     color: 'white',
     fontSize: 17,
     borderRadius: 20, // Rounded corners for the active button
   },
   inactiveButton: {
-    backgroundColor: 'red',
+    backgroundColor: '#022150',
   },
   activeText: {
     color: 'white',
     fontSize: 17,
   },
   inactiveText: {
-    color: '#8E8E8E',
+    color: '#022150',
     fontSize: 17,
     color: 'white',
   },
@@ -251,10 +250,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 10,
     flexDirection: 'row',
+    backgroundColor:'#022150'
+    
   },
   textSign: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: '600',
   },
 });
 

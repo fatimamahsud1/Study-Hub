@@ -14,7 +14,7 @@ const App = () => {
  
   return (
     
-  // <ChatScreen/>
+  // <OnboardingScreen/>
   <AuthNavigation></AuthNavigation>
   );
 };

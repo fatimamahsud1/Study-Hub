@@ -9,8 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createStackNavigator } from '@react-navigation/stack';
 import ForgotPassword from '../screens/ForgotPassword.js';
 import OPTscreen from '../screens/OPTscreen.js';
-import ChatScreen from '../screens/ChatScreen.js';
-import ResponseScreen from '../screens/ResponseScreen.js';
+import QuizHome from '../screens/QuizHome.js';
 const Stack = createStackNavigator();
 
 
@@ -37,7 +36,6 @@ const AuthNavigation = () => {
 
   
   let initialRouteName = isAppFirstLaunched ? 'onboardingScreen' : 'Signup';
-  // let initialRouteName = 'ChatScreen'
   return (
     isAppFirstLaunched !== null && (
         <NavigationContainer>
@@ -47,8 +45,7 @@ const AuthNavigation = () => {
             <Stack.Screen name="Signin" component={Signin} options={{ headerShown: false }} />
             <Stack.Screen name="ForgotPassword" component={ForgotPassword} options={{ headerShown: false }} />
             <Stack.Screen name="OPTscreen" component={OPTscreen} options={{ headerShown: false }} />
-            <Stack.Screen name="ChatScreen" component={ChatScreen} options={{ headerShown: false }} />
-            <Stack.Screen name="ResponseScreen" component={ResponseScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="QuizHome" component={QuizHome} options={{ headerShown: false }} />
 
             
           </Stack.Navigator>

@@ -123,8 +123,7 @@ const OTPscreen = ({navigation}) => {
                 onPress={() => {
                    
                 }}>
-                <LinearGradient
-                  colors={['#5872A6', '#282534']}
+                <View
                   style={styles.signIn}>
                   <Text
                     style={[
@@ -135,7 +134,7 @@ const OTPscreen = ({navigation}) => {
                     ]}>
                     Verify Code
                   </Text>
-                </LinearGradient>
+                </View>
               </TouchableOpacity>
             </View>
             <TouchableOpacity style={styles.resendButton}>
@@ -227,6 +226,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     flexDirection: 'row',
     elevation: 1,
+    backgroundColor:'#022150'
   },
   textSign: {
     fontSize: 18,
