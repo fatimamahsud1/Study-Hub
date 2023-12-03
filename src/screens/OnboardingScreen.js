@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import {
   SafeAreaView,
   Image,
@@ -10,10 +10,12 @@ import {
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
-const {width, height} = Dimensions.get('window');
 
-const COLORS = {primary: '#282534', white: '#fff'};
+const { width, height } = Dimensions.get('window');
+
+const COLORS = { primary: '#022150', white: '#fff' };
 
 const slides = [
   {
@@ -36,25 +38,13 @@ const slides = [
   },
 ];
 
-const Slide = ({item}) => {
-  return (
-    <View style={{alignItems: 'center'}}>
-      <Image
-        source={item?.image}
-        style={{height: '75%', width, resizeMode: 'contain'}}
-      />
-      <View>
-        <Text style={styles.title}>{item?.title}</Text>
-        <Text style={styles.subtitle}>{item?.subtitle}</Text>
-      </View>
-    </View>
-  );
-};
+const OnboardingScreen = () => {
+  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
+  const navigation = useNavigation();
 
-const OnboardingScreen = ({navigation}) => {
-  const [currentSlideIndex, setCurrentSlideIndex] = React.useState(0);
-  const ref = React.useRef();
-  const updateCurrentSlideIndex = e => {
+  const ref = useRef();
+
+  const updateCurrentSlideIndex = (e) => {
     const contentOffsetX = e.nativeEvent.contentOffset.x;
     const currentIndex = Math.round(contentOffsetX / width);
     setCurrentSlideIndex(currentIndex);
@@ -62,42 +52,32 @@ const OnboardingScreen = ({navigation}) => {
 
   const goToNextSlide = () => {
     const nextSlideIndex = currentSlideIndex + 1;
-    if (nextSlideIndex != slides.length) {
+    if (nextSlideIndex !== slides.length) {
       const offset = nextSlideIndex * width;
-      ref?.current.scrollToOffset({offset});
-      setCurrentSlideIndex(currentSlideIndex + 1);
+      ref?.current.scrollToOffset({ offset });
+      setCurrentSlideIndex(nextSlideIndex);
+    } else {
+      // If it's the last slide, navigate to Signup screen
+      navigation.replace('Signup');
     }
   };
-
   const skip = () => {
-    const lastSlideIndex = slides.length - 1;
-    const offset = lastSlideIndex * width;
-    ref?.current.scrollToOffset({offset});
-    setCurrentSlideIndex(lastSlideIndex);
+    // You can navigate to the screen where you want to generate random quiz questions
+    // Update 'RandomQuizScreen' with the actual screen name for generating random questions
+    navigation.navigate('Signup');
   };
+ 
 
   const Footer = () => {
     return (
-      <View
-        style={{
-          height: height * 0.25,
-          justifyContent: 'space-between',
-          paddingHorizontal: 20,
-        }}>
-        {/* Indicator container */}
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'center',
-            marginTop: 20,
-          }}>
-          {/* Render indicator */}
+      <View style={styles.footerContainer}>
+        <View style={styles.indicatorContainer}>
           {slides.map((_, index) => (
             <View
               key={index}
               style={[
                 styles.indicator,
-                currentSlideIndex == index && {
+                currentSlideIndex === index && {
                   backgroundColor: COLORS.white,
                   width: 25,
                 },
@@ -106,52 +86,22 @@ const OnboardingScreen = ({navigation}) => {
           ))}
         </View>
 
-        {/* Render buttons */}
-        <View style={{marginBottom: 20}}>
-          {currentSlideIndex == slides.length - 1 ? (
-            <View style={{height: 50}}>
-              <TouchableOpacity
-                style={styles.btn}
-                onPress={() => navigation.replace('Signup')}>
-                <Text style={{fontWeight: 'bold', fontSize: 15}}>
-                  GET STARTED
-                </Text>
-              </TouchableOpacity>
-            </View>
+        <View style={styles.buttonContainer}>
+          {currentSlideIndex === slides.length - 1 ? (
+            <TouchableOpacity style={styles.getStartedButton} onPress={() => navigation.replace('Signup')}>
+              <Text style={styles.buttonText}>GET STARTED</Text>
+            </TouchableOpacity>
           ) : (
-            <View style={{flexDirection: 'row'}}>
+            <View style={styles.buttonRow}>
               <TouchableOpacity
                 activeOpacity={0.8}
-                style={[
-                  styles.btn,
-                  {
-                    borderColor: COLORS.white,
-                    borderWidth: 1,
-                    backgroundColor: 'transparent',
-                  },
-                ]}
+                style={[styles.skipButton, { borderColor: COLORS.white }]}
                 onPress={skip}>
-                <Text
-                  style={{
-                    fontWeight: 'bold',
-                    fontSize: 15,
-                    color: COLORS.white,
-                  }}>
-                  SKIP
-                </Text>
+                <Text style={styles.buttonText}>SKIP</Text>
               </TouchableOpacity>
-              <View style={{width: 15}} />
-              <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={goToNextSlide}
-                style={styles.btn}>
-                <Text
-                  style={{
-                    fontWeight: 'bold',
-                    fontSize: 15,
-                  }}>
-                  NEXT
-                </Text>
+              <View style={styles.buttonSpacer} />
+              <TouchableOpacity activeOpacity={0.8} onPress={goToNextSlide} style={styles.nextButton}>
+                <Text style={styles.buttonText}>NEXT</Text>
               </TouchableOpacity>
             </View>
           )}
@@ -161,31 +111,53 @@ const OnboardingScreen = ({navigation}) => {
   };
 
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: COLORS.primary}}>
+    <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={COLORS.primary} />
       <FlatList
         ref={ref}
         onMomentumScrollEnd={updateCurrentSlideIndex}
-        contentContainerStyle={{height: height * 0.75}}
+        contentContainerStyle={styles.flatListContainer}
         showsHorizontalScrollIndicator={false}
         horizontal
         data={slides}
         pagingEnabled
-        renderItem={({item}) => <Slide item={item} />}
+        renderItem={({ item }) => <Slide item={item} />}
       />
       <Footer />
     </SafeAreaView>
   );
 };
 
+const Slide = ({ item }) => {
+  return (
+    <View style={styles.slideContainer}>
+      <Image source={item?.image} style={styles.image} />
+      <View style={styles.textContainer}>
+        <Text style={styles.title}>{item?.title}</Text>
+        <Text style={styles.subtitle}>{item?.subtitle}</Text>
+      </View>
+    </View>
+  );
+};
+
 const styles = StyleSheet.create({
-  subtitle: {
-    color: COLORS.white,
-    fontSize: 13,
-    marginTop: 10,
-    maxWidth: '70%',
-    textAlign: 'center',
-    lineHeight: 23,
+  container: {
+    flex: 1,
+    backgroundColor: COLORS.primary,
+  },
+  flatListContainer: {
+    height: height * 0.75,
+  },
+  slideContainer: {
+    alignItems: 'center',
+  },
+  image: {
+    height: '75%',
+    width: width,
+    resizeMode: 'contain',
+  },
+  textContainer: {
+    alignItems: 'center',
   },
   title: {
     color: COLORS.white,
@@ -194,10 +166,23 @@ const styles = StyleSheet.create({
     marginTop: 20,
     textAlign: 'center',
   },
-  image: {
-    height: '100%',
-    width: '100%',
-    resizeMode: 'contain',
+  subtitle: {
+    color: COLORS.white,
+    fontSize: 13,
+    marginTop: 10,
+    maxWidth: '70%',
+    textAlign: 'center',
+    lineHeight: 23,
+  },
+  footerContainer: {
+    height: height * 0.25,
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+  },
+  indicatorContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 20,
   },
   indicator: {
     height: 2.5,
@@ -206,13 +191,44 @@ const styles = StyleSheet.create({
     marginHorizontal: 3,
     borderRadius: 2,
   },
-  btn: {
+  buttonContainer: {
+    marginBottom: 20,
+  },
+  buttonRow: {
+    flexDirection: 'row',
+  },
+  skipButton: {
     flex: 1,
     height: 50,
     borderRadius: 5,
-    backgroundColor: '#fff',
+    backgroundColor: 'transparent',
+    borderColor: COLORS.white,
+    borderWidth: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
+  buttonSpacer: {
+    width: 15,
+  },
+  nextButton: {
+    flex: 1,
+    height: 50,
+    borderRadius: 5,
+    backgroundColor: COLORS.white,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  getStartedButton: {
+    height: 50,
+    borderRadius: 5,
+    backgroundColor: COLORS.white,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonText: {
+    fontWeight: 'bold',
+    fontSize: 15,
+  },
 });
+
 export default OnboardingScreen;

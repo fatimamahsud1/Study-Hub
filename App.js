@@ -16,7 +16,7 @@ const App = () => {
  
   return (
     
-  // <ChatScreen></ChatScreen>
+  // <OnboardingScreen/>
   <AuthNavigation></AuthNavigation>
   // <StackNavigator></StackNavigator>r
   );

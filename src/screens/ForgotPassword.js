@@ -117,8 +117,7 @@ const Signup = ({navigation}) => {
                 onPress={() => {
                   navigation.navigate('OPTscreen');
                 }}>
-                <LinearGradient
-                  colors={['#5872A6', '#282534']}
+                <View
                   style={styles.signIn}>
                   <Text
                     style={[
@@ -129,7 +128,7 @@ const Signup = ({navigation}) => {
                     ]}>
                     Reset Password
                   </Text>
-                </LinearGradient>
+                </View>
               </TouchableOpacity>
             </View>
           </ScrollView>
@@ -199,6 +198,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     flexDirection: 'row',
     elevation: 2,
+    backgroundColor:'#022150'
   },
   textSign: {
     fontSize: 18,

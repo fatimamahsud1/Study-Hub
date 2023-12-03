@@ -15,7 +15,7 @@ import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
-const COLORS = {primary: '#282534', white: '#fff', blue: '#3E5C89'};
+const COLORS = {primary: '#022150', white: '#fff', blue: '#3E5C89'};
 const Signup = ({navigation}) => {
   const [data, setData] = React.useState({
     username: '',
@@ -29,13 +29,13 @@ const Signup = ({navigation}) => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerStyle: {
-        backgroundColor: '#282534',
+        backgroundColor: '#022150',
         borderWidth:1, 
-        borderColor:'#282534',
+        borderColor:'#022150',
       },
       headerTitleStyle: {
-        color: 'grey',
-        fontSize: 15,
+        color: 'white',
+        fontSize: 12,
         alignItems:'center', 
         alignSelf: 'center',
         fontWeight: '400',
@@ -50,11 +50,14 @@ const Signup = ({navigation}) => {
             width: 90,
             borderRadius: 20,
             marginRight:10, 
+            fontSize: 13,
+
           }}>
           <Text
             style={{
-              fontSize: 17,
+              fontSize: 14,
               marginTop:5, 
+              fontWeight:'bold',
               alignSelf: 'center',
               fontWeight: '100',
               color: 'white',
@@ -216,8 +219,7 @@ const Signup = ({navigation}) => {
               onPress={() => {
                 navigation.navigate('Signin');
               }}>
-              <LinearGradient
-                colors={['#5872A6', '#282534']}
+              <View
                 style={styles.signIn}>
                 <Text
                   style={[
@@ -228,7 +230,7 @@ const Signup = ({navigation}) => {
                   ]}>
                   Sign Up
                 </Text>
-              </LinearGradient>
+              </View>
             </TouchableOpacity>
 
             <Text style={{marginVertical: 10, color: '#969AA8', fontSize: 12}}>
@@ -270,8 +272,7 @@ const Signup = ({navigation}) => {
                   marginHorizontal: 5,
                   flexDirection: 'row',
                 }}>
-                <LinearGradient
-                  colors={['#5872A6', '#282534']}
+                <View
                   style={styles.signIn}>
                   <Fb width={25} height={25} style={{marginTop: 1}} />
                   <Text
@@ -282,7 +283,7 @@ const Signup = ({navigation}) => {
                     }}>
                     Facebook
                   </Text>
-                </LinearGradient>
+                </View>
               </View>
             </View>
           </View>
@@ -297,13 +298,15 @@ export default Signup;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#282534',
+    backgroundColor: '#022150',
   },
   header: {
     flex: 0.6,
     justifyContent: 'flex-end',
     paddingHorizontal: 20,
     paddingBottom: 1,
+    backgroundColor: '#022150',
+
   },
   footer: {
     flex: Platform.OS === 'ios' ? 3 : 5,
@@ -312,11 +315,12 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 30,
     paddingHorizontal: 20,
     paddingVertical: 30,
+    
   },
   text_header: {
-    color: '#fff',
+    color: 'white',
     fontWeight: 'bold',
-    fontSize: 30,
+    fontSize: 20,
   },
   text_footer: {
     color: '#05375a',
@@ -346,6 +350,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 10,
     flexDirection: 'row',
+    backgroundColor:'#022150',
+
   },
   textSign: {
     fontSize: 18,

@@ -9,9 +9,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {createStackNavigator} from '@react-navigation/stack';
 import ForgotPassword from '../screens/ForgotPassword.js';
 import OPTscreen from '../screens/OPTscreen.js';
+
 import ChatScreen from '../screens/SlidesScreen1.js';
 import ResponseScreen from '../screens/ResponseScreen.js';
 import SlidesScreen1 from '../screens/SlidesScreen1.js';
+import QuizHome from '../screens/QuizHome.js';
 const Stack = createStackNavigator();
 
 const AuthNavigation = () => {
@@ -35,6 +37,7 @@ const AuthNavigation = () => {
     checkFirstLaunch();
   }, []);
 
+
   // let initialRouteName = isAppFirstLaunched ? 'onboardingScreen' : 'Signup';
   let initialRouteName = 'SlidesScreen1'
   return (
@@ -57,6 +60,7 @@ const AuthNavigation = () => {
             component={ForgotPassword}
             options={{headerShown: false}}
           />
+          <Stack.Screen name="QuizHome" component={QuizHome} options={{ headerShown: false }} />
 
           <Stack.Screen
             name="OPTscreen"
