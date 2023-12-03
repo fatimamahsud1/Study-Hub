@@ -9,7 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {createStackNavigator} from '@react-navigation/stack';
 import ForgotPassword from '../screens/ForgotPassword.js';
 import OPTscreen from '../screens/OPTscreen.js';
-
+import BottomTabNavigation from './BottomTabNavigation';
 import ChatScreen from '../screens/SlidesScreen1.js';
 import ResponseScreen from '../screens/ResponseScreen.js';
 import SlidesScreen1 from '../screens/SlidesScreen1.js';
@@ -38,8 +38,8 @@ const AuthNavigation = () => {
   }, []);
 
 
-  // let initialRouteName = isAppFirstLaunched ? 'onboardingScreen' : 'Signup';
-  let initialRouteName = 'SlidesScreen1'
+  let initialRouteName = isAppFirstLaunched ? 'onboardingScreen' : 'Signup';
+  // let initialRouteName = 'SlidesScreen1'
   return (
     isAppFirstLaunched !== null && (
       <NavigationContainer>
@@ -77,6 +77,7 @@ const AuthNavigation = () => {
             component={ResponseScreen}
             options={{headerShown: false}}
           />
+          <Stack.Screen name="Home" component={BottomTabNavigation} options={{headerShown: false}} />
         </Stack.Navigator>
       </NavigationContainer>
     )

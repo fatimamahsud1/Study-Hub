@@ -1,7 +1,7 @@
 // Navigation.js
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
 import QuizHome from '../screens/QuizHome';
 import OptionsScreen from '../screens/OptionsScreen';
 import SelectTopics from '../screens/SelectTopics';
@@ -13,27 +13,62 @@ import McqsScreen from '../screens/McqsScreen';
 import QuizResultScreen from '../screens/QuizResultScreen';
 import Signup from '../screens/Signup';
 import OnboardingScreen from '../screens/OnboardingScreen';
-
 const Stack = createStackNavigator();
 
 const StackNavigator = () => {
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="QuizzHome">
-        <Stack.Screen name="QuizzHome" component={QuizHome} options={{ headerShown: false }} />
-        <Stack.Screen name="DifficultyLevelsScreen" component={DifficultyLevelsScreen}  options={{ headerShown: false }} />
-        <Stack.Screen name="OptionsScreen" component={OptionsScreen}  options={{ headerShown: false }} />
-        <Stack.Screen name="McqsScreen" component={McqsScreen}  options={{ headerShown: false }} />
-        <Stack.Screen name="SelectTopics" component={SelectTopics}  options={{ headerShown: false }} />
-        <Stack.Screen name="StartQuiz" component={StartQuiz}  options={{ headerShown: false }} />
-        <Stack.Screen name="QuizResultScreen" component={QuizResultScreen}  options={{ headerShown: false }} />
-        <Stack.Screen name="EasyLevelScreen" component={EasyLevelScreen}  options={{ headerShown: false }} />
-        <Stack.Screen name="NumberSelectionScreen" component={NumberSelectionScreen}  options={{ headerShown: false }} />
+    
+      <Stack.Navigator>
+        <Stack.Screen
+          name="QuizzHome"
+          component={QuizHome}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="DifficultyLevelsScreen"
+          component={DifficultyLevelsScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="OptionsScreen"
+          component={OptionsScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="McqsScreen"
+          component={McqsScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="SelectTopics"
+          component={SelectTopics}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="StartQuiz"
+          component={StartQuiz}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="QuizResultScreen"
+          component={QuizResultScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="EasyLevelScreen"
+          component={EasyLevelScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="NumberSelectionScreen"
+          component={NumberSelectionScreen}
+          options={{headerShown: false}}
+        />
         <Stack.Screen name="Signup" component={Signup} />
         <Stack.Screen name="OnboardingScreen" component={OnboardingScreen} />
 
       </Stack.Navigator>
-    </NavigationContainer>
+    
   );
 };
 
