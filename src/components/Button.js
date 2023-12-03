@@ -30,6 +30,8 @@ const styles = StyleSheet.create({
     width: '85%',
     alignItems: 'center',
     justifyContent: 'center',
+    margin:8,
+
   },
   buttonText: {
     fontSize: 16,

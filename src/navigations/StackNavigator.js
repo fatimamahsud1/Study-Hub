@@ -6,11 +6,11 @@ import QuizHome from '../screens/QuizHome';
 import OptionsScreen from '../screens/OptionsScreen';
 import SelectTopics from '../screens/SelectTopics';
 import StartQuiz from '../screens/StartQuiz';
-import FeedbackScreen from '../screens/FeedbackScreen';
 import NumberSelectionScreen from '../screens/NumberSelectionScreen';
 import EasyLevelScreen from '../screens/EasyLevelScreen';
 import DifficultyLevelsScreen from '../screens/DifficultyLevelsScreen';
 import McqsScreen from '../screens/McqsScreen';
+import QuizResultScreen from '../screens/QuizResultScreen';
 
 const Stack = createStackNavigator();
 
@@ -24,7 +24,7 @@ const StackNavigator = () => {
         <Stack.Screen name="McqsScreen" component={McqsScreen}  options={{ headerShown: false }} />
         <Stack.Screen name="SelectTopics" component={SelectTopics}  options={{ headerShown: false }} />
         <Stack.Screen name="StartQuiz" component={StartQuiz}  options={{ headerShown: false }} />
-        <Stack.Screen name="FeedbackScreen" component={FeedbackScreen}  options={{ headerShown: false }} />
+        <Stack.Screen name="QuizResultScreen" component={QuizResultScreen}  options={{ headerShown: false }} />
         <Stack.Screen name="EasyLevelScreen" component={EasyLevelScreen}  options={{ headerShown: false }} />
         <Stack.Screen name="NumberSelectionScreen" component={NumberSelectionScreen}  options={{ headerShown: false }} />
 

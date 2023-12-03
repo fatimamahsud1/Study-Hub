@@ -19,6 +19,45 @@ const McqsScreen = ({ route, navigation }) => {
   const selectedTopic = route.params?.selectedTopic || 'Default Topic';
   let interval; // Declare interval variable
 
+  const [isQuizSubmitted, setIsQuizSubmitted] = useState(false);
+
+  const handleSubmitQuiz = () => {
+    clearInterval(interval);
+  
+    let correctCount = 0;
+    let incorrectCount = 0;
+    const newFeedbackData = { correct: 0, incorrect: 0 };
+  
+    shuffledQuestions.forEach((question, index) => {
+      const selectedAnswerIndex = selectedOptions[index];
+      const correctAnswerIndex = question.correctIndex;
+  
+      if (selectedAnswerIndex === correctAnswerIndex) {
+        correctCount++;
+      } else {
+        incorrectCount++;
+      }
+    });
+  
+    setUserScore(correctCount);
+    setFeedbackData({ correct: correctCount, incorrect: incorrectCount });
+    setIsQuizSubmitted(true);
+  
+    navigation.navigate('QuizResultScreen', {
+      userScore: correctCount,
+      correctAnswers: correctCount, // Updated this line
+      totalQuestions: shuffledQuestions?.length || 0,
+      elapsedMinutes: timer.minutes,
+      elapsedSeconds: timer.seconds,
+      feedbackData: newFeedbackData,
+    });
+  };
+
+  const extractExplanation = (questionElement) => {
+    const explanationElement = questionElement.find('.mtq_explanation-text');
+    return explanationElement.text().trim();
+  };
+
   useEffect(() => {
     const scrapeQuestions = async () => {
       try {
@@ -27,6 +66,7 @@ const McqsScreen = ({ route, navigation }) => {
 
         const questions = [];
         const correctAnswers = [];
+        
 
         $('div.mtq_question_text').each((index, questionElement) => {
           const questionText = $(questionElement).text().trim();
@@ -41,6 +81,7 @@ const McqsScreen = ({ route, navigation }) => {
               correctOptionText = choiceText;
             }
           });
+          
 
           const correctIndex = choices.findIndex((choice) => choice === correctOptionText);
 
@@ -55,6 +96,7 @@ const McqsScreen = ({ route, navigation }) => {
         console.error('Error fetching data:', error.message);
       }
     };
+   
 
     const shuffleArray = (array) => {
       const shuffledArray = [...array];
@@ -83,39 +125,9 @@ const McqsScreen = ({ route, navigation }) => {
     return () => clearInterval(interval);
   }, []);
 
-  const handleSubmitQuiz = () => {
-    clearInterval(interval);
-
-    let correctCount = 0;
-    let incorrectCount = 0;
-    const newFeedbackData = { correct: 0, incorrect: 0 };
-
-    shuffledQuestions.forEach((question, index) => {
-      const selectedAnswerIndex = selectedOptions[index];
-      const correctAnswerIndex = question.correctIndex;
-
-      if (selectedAnswerIndex === correctAnswerIndex) {
-        correctCount++;
-      } else {
-        incorrectCount++;
-      }
-    });
-
-    setUserScore(correctCount);
-    setFeedbackData({ correct: correctCount, incorrect: incorrectCount });
-
-    navigation.navigate('FeedbackScreen', {
-      userScore: correctCount,
-      correctAnswers,
-      totalQuestions: shuffledQuestions.length,
-      elapsedMinutes: timer.minutes,
-      elapsedSeconds: timer.seconds,
-      feedbackData: newFeedbackData,
-    });
-  };
 
   return (
-    <ScrollView style={styles.container}>
+      <ScrollView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerText}>Time Elapsed: {timer.minutes} minutes {timer.seconds} seconds</Text>
       </View>
@@ -125,7 +137,14 @@ const McqsScreen = ({ route, navigation }) => {
           {question.choices.map((choice, choiceIndex) => (
             <TouchableOpacity
               key={choiceIndex}
-              style={styles.choiceContainer}
+              style={[
+                styles.choiceContainer,
+                isQuizSubmitted &&
+                  selectedOptions[questionIndex] === choiceIndex && {
+                    backgroundColor:
+                      choiceIndex === question.correctIndex ? '#4CAF50' : '#FF5252',
+                  },
+              ]}
               onPress={() => {
                 const newSelectedOptions = { ...selectedOptions };
                 newSelectedOptions[questionIndex] = choiceIndex;
@@ -144,6 +163,14 @@ const McqsScreen = ({ route, navigation }) => {
               <Text style={styles.choiceText}>{`${choice}`}</Text>
             </TouchableOpacity>
           ))}
+          {isQuizSubmitted && question.html && (
+            <View style={styles.explanationContainer}>
+              <Text style={styles.explanationLabel}>Explanation:</Text>
+              <Text style={styles.explanationText}>
+                {extractExplanation($(question.html))}
+              </Text>
+            </View>
+          )}
         </View>
       ))}
       <View style={styles.buttonContainer}>
@@ -153,11 +180,30 @@ const McqsScreen = ({ route, navigation }) => {
   );
 };
 
+
+
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f0f0f0',
   },
+  explanationContainer: {
+    marginTop: 10,
+    padding: 10,
+    backgroundColor: '#e0e0e0',
+    borderRadius: 8,
+  },
+  explanationLabel: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  explanationText: {
+    fontSize: 14,
+    color: '#333',
+  },
+  
   header: {
     backgroundColor: '#022150',
     padding: 10,
