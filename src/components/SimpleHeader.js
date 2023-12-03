@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   userIcon: {
-    marginRight: 10,
+    marginRight: 30,
   },
   avatar: {
     width: 50, 
