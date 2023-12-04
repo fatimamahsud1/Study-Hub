@@ -7,6 +7,9 @@ import Signup from './src/screens/Signup';
 import Signin from './src/screens/Signin';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AuthNavigation from './src/navigations/AuthNavigation';
+import StackNavigator from './src/navigations/StackNavigator';
+import ChatScreen from './src/screens/SlidesScreen1';
+import BottomTabNavigation from './src/navigations/BottomTabNavigation';
 const Stack = createStackNavigator();
 
 const App = () => {
@@ -15,7 +18,12 @@ const App = () => {
   return (
     
   // <OnboardingScreen/>
-  <AuthNavigation></AuthNavigation>
+  // <AuthNavigation></AuthNavigation>
+  // <StackNavigator></StackNavigator>r
+  <NavigationContainer>
+ <BottomTabNavigation></BottomTabNavigation>
+  </NavigationContainer>
+ 
   );
 };
 
