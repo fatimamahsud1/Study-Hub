@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet} from 'react-native';
 import Button from '../components/Button';
 import McqsScreen from './McqsScreen';
+import QuizHome from './QuizHome';
 
 const QuizResultScreen = ({ route, navigation }) => {
   const { userScore, correctAnswers, totalQuestions, elapsedMinutes, elapsedSeconds, feedbackData } = route.params;
@@ -14,12 +15,11 @@ const QuizResultScreen = ({ route, navigation }) => {
         <Text style={styles.scoreText}>{`Your Score: ${userScore} / ${totalQuestions}`}</Text>
         <Text style={styles.correctCountText}>{`Correct Answers: ${correctCount}`}</Text>
         <Text style={styles.timeText}>{`Time Elapsed: ${elapsedMinutes} minutes ${elapsedSeconds} seconds`}</Text>
-        <Text style={styles.feedbackText}>{`Feedback: ${feedbackData.correct} correct, ${feedbackData.incorrect} incorrect`}</Text>
       </View>
 
       <View style={styles.buttonContainer}>
       <Button  text ="Retake Quiz" bgColor= '#022150'  textColortitle onPress={McqsScreen} />
-        <Button style={styles.btn} title="Go Back" onPress={() => navigation.navigate('Home')} />
+        <Button text ="Back to Home" bgColor= '#022150'  textColortitle onPress={QuizHome} />
       </View>
     </View>
   );

@@ -4,11 +4,11 @@ import axios from 'axios';
 import cheerio from 'cheerio';
 import { RadioButton } from 'react-native-paper';
 import DropDownPicker from 'react-native-dropdown-picker';
-
+import EasyFeedbackScreen from './EasyFeedbackScreen';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-const EasyLevelScreen = ({ route }) => {
+const EasyLevelScreen = ({ route, navigation }) => {
   const [questions, setQuestions] = useState([]);
   const [selectedOptions, setSelectedOptions] = useState({});
   const [shuffledQuestions, setShuffledQuestions] = useState([]);
@@ -18,6 +18,7 @@ const EasyLevelScreen = ({ route }) => {
   const [selectedQuestionsCount, setSelectedQuestionsCount] = useState(10);
   const [displayedQuestions, setDisplayedQuestions] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [intervalId, setIntervalId] = useState(null);
 
   const selectedTopic = route.params?.selectedTopic || 'Default Topic';
 
@@ -33,46 +34,37 @@ const EasyLevelScreen = ({ route }) => {
 
     const scrapeQuestions = async (page) => {
       try {
-        // Make a request to the website
         const response = await axios.get(`https://www.geeksforgeeks.org/top-50-data-structures-mcqs-with-answers/page/${page}/`);
-
-        // Load the HTML into cheerio
         const $ = cheerio.load(response.data);
 
-        // Arrays to store questions, choices, correct options, and explanations
         const newQuestions = [];
         const correctOptions = [];
-        const explanations = [];
 
-        // Extract questions, choices, correct options, and explanations from the HTML
         $('div.mtq_question_text').each((index, questionElement) => {
           const questionText = $(questionElement).text().trim();
           const choices = [];
           let correctOptionText = null;
-          let explanation = null;
 
-          // Extract choices and correct options for the current question
           $(`tr[id^="mtq_row-${index + 1}-"]`).each((index, choiceElement) => {
             const choiceText = $(choiceElement).find('div.mtq_answer_text').text().trim();
             choices.push(choiceText);
 
-            // Check if the choice is the correct option
             if ($(choiceElement).find('div.mtq_correct_marker').length > 0) {
               correctOptionText = choiceText;
             }
           });
 
-          // Extract explanation for the current question
           const explanationElement = $(`div#mtq_question_explanation-${index + 1}`);
+          let explanation = null;
+          
           if (explanationElement.length > 0) {
             explanation = explanationElement.find('div.mtq_explanation-text').contents().filter(function () {
-              return this.nodeType === 3; // Filter out non-text nodes
+              return this.nodeType === 3;
             }).text().trim();
           }
 
           newQuestions.push({ text: questionText, choices });
           correctOptions.push(correctOptionText);
-          explanations.push(explanation);
         });
 
         setQuestions((prevQuestions) => [...prevQuestions, ...newQuestions]);
@@ -88,11 +80,7 @@ const EasyLevelScreen = ({ route }) => {
 
       while (hasMorePages) {
         await scrapeQuestions(page);
-
-        // Increment the page number for the next iteration
         page++;
-
-        // Check if there is a "Next" button to load more pages
         const nextPageButton = $(`a.page.quiz_navigation_btn.next_quiz[data-pageid="${page * 100000}"]`);
         hasMorePages = nextPageButton.length > 0;
       }
@@ -106,7 +94,6 @@ const EasyLevelScreen = ({ route }) => {
   }, [shuffledQuestions, selectedQuestionsCount]);
 
   useEffect(() => {
-    // Start the timer
     const interval = setInterval(() => {
       setTimer((prevTimer) => {
         const newSeconds = prevTimer.seconds + 1;
@@ -118,15 +105,16 @@ const EasyLevelScreen = ({ route }) => {
       });
     }, 1000);
 
-    return () => clearInterval(interval); // Cleanup interval on component unmount
+    setIntervalId(interval);
+
+    return () => clearInterval(interval);
   }, []);
 
   const handleSubmitQuiz = () => {
-    // Stop the timer
-    clearInterval(interval);
+    clearInterval(intervalId);
 
     let score = 0;
-    const newCorrectAnswers = { ...correctAnswers };
+    const newCorrectAnswers = {};
 
     shuffledQuestions.forEach((question, index) => {
       if (selectedOptions[index] === question.correctIndex) {
@@ -138,14 +126,13 @@ const EasyLevelScreen = ({ route }) => {
     setUserScore(score);
     setCorrectAnswers(newCorrectAnswers);
 
-    // Navigate to the feedback screen and pass the necessary information
-    // navigation.navigate('FeedbackScreen', {
-    //   userScore: score,
-    //   correctAnswers: newCorrectAnswers,
-    //   shuffledQuestions,
-    //   elapsedMinutes: timer.minutes,
-    //   elapsedSeconds: timer.seconds,
-    // });
+    navigation.navigate('EasyFeedbackScreen', {
+      userScore: score,
+      correctAnswers: newCorrectAnswers,
+      shuffledQuestions,
+      elapsedMinutes: timer.minutes,
+      elapsedSeconds: timer.seconds,
+    });
   };
 
   return (

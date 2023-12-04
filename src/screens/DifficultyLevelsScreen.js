@@ -16,13 +16,13 @@ const DifficultyLevelsScreen = ({ route }) => {
 
   const navigateToQuizHome = () => {
     if (selectedDifficulty === 'Easy') {
-      // Navigate to the 'SelectedTopics' screen for 'Easy' difficulty
+
       navigation.navigate('EasyLevelScreen', {
         selectedSubject: route.params?.selectedSubject || null,
         selectedDifficulty,
       });
     } else {
-      // Navigate to the 'QuizzHome' screen for other difficulty levels
+
       navigation.navigate('SelectTopics', {
         selectedSubject: route.params?.selectedSubject || null,
         selectedDifficulty,
@@ -34,7 +34,6 @@ const DifficultyLevelsScreen = ({ route }) => {
     <>
       <View style={styles.container}>
         <SimpleHeader headerText="Choose Difficulty" showBackButton={true} />
-
         <View style={styles.difficultyContainer}>
           {difficultyLevels.map((difficulty) => (
             <TouchableOpacity

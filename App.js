@@ -18,11 +18,11 @@ const App = () => {
   return (
     
   // <OnboardingScreen/>
-  // <AuthNavigation></AuthNavigation>
+  <AuthNavigation></AuthNavigation>
   // <StackNavigator></StackNavigator>r
-  <NavigationContainer>
- <BottomTabNavigation></BottomTabNavigation>
-  </NavigationContainer>
+//   <NavigationContainer>
+//  <BottomTabNavigation></BottomTabNavigation>
+//   </NavigationContainer>
  
   );
 };

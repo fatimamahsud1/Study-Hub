@@ -17,35 +17,35 @@ const McqsScreen = ({ route, navigation }) => {
   const [feedbackData, setFeedbackData] = useState({ correct: 0, incorrect: 0 });
 
   const selectedTopic = route.params?.selectedTopic || 'Default Topic';
-  let interval; // Declare interval variable
+  let interval;
 
   const [isQuizSubmitted, setIsQuizSubmitted] = useState(false);
 
   const handleSubmitQuiz = () => {
     clearInterval(interval);
-  
+
     let correctCount = 0;
     let incorrectCount = 0;
     const newFeedbackData = { correct: 0, incorrect: 0 };
-  
+
     shuffledQuestions.forEach((question, index) => {
       const selectedAnswerIndex = selectedOptions[index];
       const correctAnswerIndex = question.correctIndex;
-  
+
       if (selectedAnswerIndex === correctAnswerIndex) {
         correctCount++;
       } else {
         incorrectCount++;
       }
     });
-  
+
     setUserScore(correctCount);
     setFeedbackData({ correct: correctCount, incorrect: incorrectCount });
     setIsQuizSubmitted(true);
-  
+
     navigation.navigate('QuizResultScreen', {
       userScore: correctCount,
-      correctAnswers: correctCount, // Updated this line
+      correctAnswers: correctCount,
       totalQuestions: shuffledQuestions?.length || 0,
       elapsedMinutes: timer.minutes,
       elapsedSeconds: timer.seconds,
@@ -53,20 +53,15 @@ const McqsScreen = ({ route, navigation }) => {
     });
   };
 
-  const extractExplanation = (questionElement) => {
-    const explanationElement = questionElement.find('.mtq_explanation-text');
-    return explanationElement.text().trim();
-  };
-
   useEffect(() => {
-    const scrapeQuestions = async () => {
+    const fetchQuestionsForPage = async (page) => {
       try {
-        const response = await axios.get(`https://www.geeksforgeeks.org/data-structure-gq/top-mcqs-on-binary-trees-data-structure-with-answers/`);
+        const response = await axios.get(
+          `https://www.geeksforgeeks.org/data-structure-gq/top-mcqs-on-binary-trees-data-structure-with-answers/page/${page}/`
+        );
         const $ = cheerio.load(response.data);
 
         const questions = [];
-        const correctAnswers = [];
-        
 
         $('div.mtq_question_text').each((index, questionElement) => {
           const questionText = $(questionElement).text().trim();
@@ -81,22 +76,36 @@ const McqsScreen = ({ route, navigation }) => {
               correctOptionText = choiceText;
             }
           });
-          
 
           const correctIndex = choices.findIndex((choice) => choice === correctOptionText);
 
           questions.push({ text: questionText, choices, correctIndex });
-          correctAnswers.push(correctOptionText);
         });
+
+        return questions;
+      } catch (error) {
+        console.error(`Error fetching data for page ${page}:`, error.message);
+        return [];
+      }
+    };
+
+    const scrapeQuestions = async () => {
+      try {
+        const totalPages = 6; // Set the total number of pages here
+
+        const questionsPromises = Array.from({ length: totalPages }, (_, index) =>
+          fetchQuestionsForPage(index + 1)
+        );
+
+        const questionsArrays = await Promise.all(questionsPromises);
+        const questions = questionsArrays.flat();
 
         setQuestions(questions);
         setShuffledQuestions(shuffleArray(questions));
-        setCorrectAnswers(correctAnswers);
       } catch (error) {
         console.error('Error fetching data:', error.message);
       }
     };
-   
 
     const shuffleArray = (array) => {
       const shuffledArray = [...array];
@@ -125,9 +134,8 @@ const McqsScreen = ({ route, navigation }) => {
     return () => clearInterval(interval);
   }, []);
 
-
   return (
-      <ScrollView style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerText}>Time Elapsed: {timer.minutes} minutes {timer.seconds} seconds</Text>
       </View>
@@ -163,14 +171,6 @@ const McqsScreen = ({ route, navigation }) => {
               <Text style={styles.choiceText}>{`${choice}`}</Text>
             </TouchableOpacity>
           ))}
-          {isQuizSubmitted && question.html && (
-            <View style={styles.explanationContainer}>
-              <Text style={styles.explanationLabel}>Explanation:</Text>
-              <Text style={styles.explanationText}>
-                {extractExplanation($(question.html))}
-              </Text>
-            </View>
-          )}
         </View>
       ))}
       <View style={styles.buttonContainer}>
@@ -180,30 +180,11 @@ const McqsScreen = ({ route, navigation }) => {
   );
 };
 
-
-
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f0f0f0',
   },
-  explanationContainer: {
-    marginTop: 10,
-    padding: 10,
-    backgroundColor: '#e0e0e0',
-    borderRadius: 8,
-  },
-  explanationLabel: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 5,
-  },
-  explanationText: {
-    fontSize: 14,
-    color: '#333',
-  },
-  
   header: {
     backgroundColor: '#022150',
     padding: 10,

@@ -13,6 +13,8 @@ import McqsScreen from '../screens/McqsScreen';
 import QuizResultScreen from '../screens/QuizResultScreen';
 import Signup from '../screens/Signup';
 import OnboardingScreen from '../screens/OnboardingScreen';
+import EasyFeedbackScreen from '../screens/EasyFeedbackScreen';
+
 const Stack = createStackNavigator();
 
 const StackNavigator = () => {
@@ -24,6 +26,7 @@ const StackNavigator = () => {
           component={QuizHome}
           options={{headerShown: false}}
         />
+
         <Stack.Screen
           name="DifficultyLevelsScreen"
           component={DifficultyLevelsScreen}
@@ -66,7 +69,11 @@ const StackNavigator = () => {
         />
         <Stack.Screen name="Signup" component={Signup} />
         <Stack.Screen name="OnboardingScreen" component={OnboardingScreen} />
-
+<Stack.Screen
+          name="EasyFeedbackScreen"
+          component={EasyFeedbackScreen}
+          options={{headerShown: false}}
+        />
       </Stack.Navigator>
     
   );

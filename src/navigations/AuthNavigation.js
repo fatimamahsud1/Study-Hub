@@ -13,9 +13,20 @@ import BottomTabNavigation from './BottomTabNavigation';
 import ChatScreen from '../screens/SlidesScreen1.js';
 import ResponseScreen from '../screens/ResponseScreen.js';
 import SlidesScreen1 from '../screens/SlidesScreen1.js';
+import DifficultyLevelsScreen from '../screens/DifficultyLevelsScreen.js';
 import QuizHome from '../screens/QuizHome.js';
-const Stack = createStackNavigator();
+import OptionsScreen from '../screens/OptionsScreen.js';
+import McqsScreen from '../screens/McqsScreen.js';
+import SelectTopics from '../screens/SelectTopics.js';
+import StartQuiz from '../screens/StartQuiz.js';
+import QuizResultScreen from '../screens/QuizResultScreen.js';
+import EasyLevelScreen from '../screens/EasyLevelScreen.js';
+import NumberSelectionScreen from '../screens/NumberSelectionScreen.js';
+import EasyFeedbackScreen from '../screens/EasyFeedbackScreen.js';
 
+
+
+const Stack = createStackNavigator();
 const AuthNavigation = () => {
   const [isAppFirstLaunched, setIsAppFirstLaunched] = React.useState(null);
 
@@ -77,7 +88,57 @@ const AuthNavigation = () => {
             component={ResponseScreen}
             options={{headerShown: false}}
           />
+           <Stack.Screen
+          name="QuizzHome"
+          component={QuizHome}
+          options={{headerShown: false}}
+        />
           <Stack.Screen name="Home" component={BottomTabNavigation} options={{headerShown: false}} />
+          <Stack.Screen
+          name="DifficultyLevelsScreen"
+          component={DifficultyLevelsScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="EasyFeedbackScreen"
+          component={EasyFeedbackScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="OptionsScreen"
+          component={OptionsScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="McqsScreen"
+          component={McqsScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="SelectTopics"
+          component={SelectTopics}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="StartQuiz"
+          component={StartQuiz}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="QuizResultScreen"
+          component={QuizResultScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="EasyLevelScreen"
+          component={EasyLevelScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="NumberSelectionScreen"
+          component={NumberSelectionScreen}
+          options={{headerShown: false}}
+        />
         </Stack.Navigator>
       </NavigationContainer>
     )

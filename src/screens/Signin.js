@@ -103,7 +103,7 @@ const Signin = ({navigation}) => {
       <TouchableOpacity
               style={styles.signIn}
               onPress={() => {
-                navigation.navigate('Home');
+                navigation.navigate('QuizHome');
               }}>
               <View
                 style={styles.signIn}>
