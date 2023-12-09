@@ -1,90 +1,60 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, Button } from 'react-native';
-import ButtonComponent from '../components/Button';
+import { View, Text, StyleSheet, Button } from 'react-native';
 
 const EasyFeedbackScreen = ({ route, navigation }) => {
   const { userScore, correctAnswers, shuffledQuestions, elapsedMinutes, elapsedSeconds } = route.params;
 
-  const renderQuestionFeedback = (question, index) => (
-    <View key={index} style={styles.questionFeedback}>
-      <Text style={styles.questionText}>{`${index + 1}. ${question.text}`}</Text>
-      <Text style={styles.answerText}>{`Correct Answer: ${question.choices[correctAnswers[index]]}`}</Text>
-    </View>
-  );
+  const totalQuestions = shuffledQuestions.length;
+  const incorrectCount = totalQuestions - userScore;
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerText}>Quiz Results</Text>
-      </View>
-      <View style={styles.feedbackContainer}>
-        <Text style={styles.scoreText}>Your Score: {userScore}/{shuffledQuestions.length}</Text>
-        <Text style={styles.timeText}>Time Elapsed: {elapsedMinutes} minutes {elapsedSeconds} seconds</Text>
-        <Text style={styles.correctAnswersText}>Correct Answers:</Text>
-        {shuffledQuestions.map(renderQuestionFeedback)}
-      </View>
-      <View style={styles.buttonContainer}>
-        <ButtonComponent text="Home" bgColor="#022150" textColor="white" onPress={() => navigation.navigate('Home')} />
-      </View>
-    </ScrollView>
+    <View style={styles.container}>
+      <Text style={styles.resultText}>Quiz Results</Text>
+      <Text style={styles.scoreText}>{`Your Score: ${userScore} / ${totalQuestions}`}</Text>
+      <Text style={styles.correctCountText}>{`Correct Answers: ${userScore}`}</Text>
+      <Text style={styles.incorrectCountText}>{`Incorrect Answers: ${incorrectCount}`}</Text>
+      <Text style={styles.timeText}>{`Time Elapsed: ${elapsedMinutes} minutes ${elapsedSeconds} seconds`}</Text>
+      <Button title="Go Back to Home" onPress={() => navigation.navigate('QuizHome')} />
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: '#f0f0f0',
   },
-  header: {
-    backgroundColor: '#022150',
-    padding: 10,
-    alignItems: 'center',
-    height: 60,
-    justifyContent: 'center',
-  },
-  headerText: {
-    color: 'white',
-    fontSize: 18,
+  resultText: {
+    fontSize: 28,
     fontWeight: 'bold',
-  },
-  feedbackContainer: {
-    margin: 10,
-    padding: 10,
-    backgroundColor: 'white',
-    borderRadius: 8,
-    elevation: 3,
+    marginBottom: 20,
+    color: '#022150',
   },
   scoreText: {
-    fontSize: 16,
+    fontSize: 22,
+    marginBottom: 12,
     color: '#022150',
-    fontWeight: '700',
-    marginBottom: 10,
+  },
+  correctCountText: {
+    fontSize: 18,
+    marginBottom: 12,
+    color: '#022150',
+  },
+  incorrectCountText: {
+    fontSize: 18,
+    marginBottom: 12,
+    color: 'red',
   },
   timeText: {
-    fontSize: 14,
+    fontSize: 18,
+    marginBottom: 12,
     color: '#022150',
-    marginBottom: 10,
-  },
-  correctAnswersText: {
-    fontSize: 14,
-    color: '#022150',
-    fontWeight: '700',
-    marginBottom: 5,
-  },
-  questionFeedback: {
-    marginBottom: 10,
-  },
-  questionText: {
-    fontSize: 14,
-    color: '#022150',
-    marginBottom: 5,
-  },
-  answerText: {
-    fontSize: 12,
-    color: '#4CAF50',
   },
   buttonContainer: {
     margin: 20,
+    backgroundColor: '#022150',
   },
 });
 

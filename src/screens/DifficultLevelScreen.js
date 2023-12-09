@@ -4,12 +4,11 @@ import axios from 'axios';
 import cheerio from 'cheerio';
 import { RadioButton } from 'react-native-paper';
 import DropDownPicker from 'react-native-dropdown-picker';
-import EasyFeedbackScreen from './EasyFeedbackScreen';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-const EasyLevelScreen = ({ route, navigation }) => {
+const DifficultLevelScreen = ({ route, navigation }) => {
   const [questions, setQuestions] = useState([]);
   const [selectedOptions, setSelectedOptions] = useState({});
   const [shuffledQuestions, setShuffledQuestions] = useState([]);
@@ -39,7 +38,6 @@ const EasyLevelScreen = ({ route, navigation }) => {
         const $ = cheerio.load(response.data);
 
         const newQuestions = [];
-        const correctOptions = [];
 
         $('div.mtq_question_text').each((index, questionElement) => {
           const questionText = $(questionElement).text().trim();
@@ -57,7 +55,7 @@ const EasyLevelScreen = ({ route, navigation }) => {
 
           const explanationElement = $(`div#mtq_question_explanation-${index + 1}`);
           let explanation = null;
-          
+
           if (explanationElement.length > 0) {
             explanation = explanationElement.find('div.mtq_explanation-text').contents().filter(function () {
               return this.nodeType === 3;
@@ -65,34 +63,29 @@ const EasyLevelScreen = ({ route, navigation }) => {
           }
 
           newQuestions.push({ text: questionText, choices, correctIndex: choices.indexOf(correctOptionText) });
-          correctOptions.push(correctOptionText);
         });
 
         setQuestions((prevQuestions) => [...prevQuestions, ...newQuestions]);
-        setShuffledQuestions(shuffleArray([...questions, ...newQuestions]));
       } catch (error) {
         console.error('Error fetching data:', error.message);
       }
     };
 
-    const fetchAllPages = async () => {
+    const fetchPages = async () => {
       let page = 1;
-      let hasMorePages = true;
 
-      while (hasMorePages) {
+      while (page <= 5) {
         await scrapeQuestions(page);
         page++;
-        const nextPageButton = $(`a.page.quiz_navigation_btn.next_quiz[data-pageid="${page * 100000}"]`);
-        hasMorePages = nextPageButton.length > 0;
       }
     };
 
-    fetchAllPages();
+    fetchPages();
   }, [selectedTopic]);
 
   useEffect(() => {
-    setDisplayedQuestions(shuffledQuestions.slice(0, selectedQuestionsCount));
-  }, [shuffledQuestions, selectedQuestionsCount]);
+    setDisplayedQuestions(shuffleArray(questions).slice(0, selectedQuestionsCount));
+  }, [questions, selectedQuestionsCount]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -113,29 +106,28 @@ const EasyLevelScreen = ({ route, navigation }) => {
 
   const handleSubmitQuiz = () => {
     clearInterval(intervalId);
-  
+
     let score = 0;
     const newCorrectAnswers = {};
-  
+
     shuffledQuestions.forEach((question, index) => {
       if (selectedOptions[index] === question.correctIndex) {
         score++;
       }
       newCorrectAnswers[index] = question.correctIndex;
     });
-  
+
     setUserScore(score);
     setCorrectAnswers(newCorrectAnswers);
-  
+
     navigation.navigate('EasyFeedbackScreen', {
       userScore: score,
-      correctAnswers: newCorrectAnswers,  // Pass correct answers to the feedback screen
+      correctAnswers: newCorrectAnswers,
       shuffledQuestions,
       elapsedMinutes: timer.minutes,
       elapsedSeconds: timer.seconds,
     });
   };
-  
 
   return (
     <ScrollView style={styles.container}>
@@ -240,4 +232,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default EasyLevelScreen;
+export default DifficultLevelScreen;
