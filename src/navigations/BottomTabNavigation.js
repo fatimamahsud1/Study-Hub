@@ -24,6 +24,7 @@ import Home from '../screens/Home';
 import Scan from '../screens/Scan';
 import StackNavigator from './StackNavigator';
 import SlidesStack from './SlidesStack';
+import QuizStack from './QuizStack';
 
 const Tab = createBottomTabNavigator();
 
@@ -127,6 +128,7 @@ export default function BottomTabNavigation() {
           name={'ActionButton'}
           component={Scan}
           options={{
+            headerShown: false, 
             tabBarIcon: ({focused}) => (
               <TouchableOpacity>
                 <View
@@ -152,9 +154,10 @@ export default function BottomTabNavigation() {
           }}></Tab.Screen>
 
         <Tab.Screen
-          name={'Notifications'}
-          component={SlidesScreen1}
+          name={'Quiz'}
+          component={QuizStack}
           options={{
+            headerShown: false, 
             tabBarIcon: ({focused}) => (
               <View
                 style={{

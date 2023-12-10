@@ -11,7 +11,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 const Signin = ({navigation}) => {
-  const [isSignIn, setIsSignIn] = useState(true); // Assuming "Sign In" is the default active button
+  const [isSignIn, setIsSignIn] = useState(true); 
   const [data, setData] = React.useState({
     username: '',
     password: '',
@@ -103,7 +103,7 @@ const Signin = ({navigation}) => {
       <TouchableOpacity
               style={styles.signIn}
               onPress={() => {
-                navigation.navigate('QuizHome');
+                navigation.navigate('Bottom');
               }}>
               <View
                 style={styles.signIn}>
