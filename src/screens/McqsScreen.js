@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions, Button } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions} from 'react-native';
 import axios from 'axios';
 import cheerio from 'cheerio';
 import { RadioButton } from 'react-native-paper';
+import Button from '../components/Button';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -174,7 +175,7 @@ const McqsScreen = ({ route, navigation }) => {
         </View>
       ))}
       <View style={styles.buttonContainer}>
-        <Button title="Submit Quiz" onPress={handleSubmitQuiz} />
+      <Button onPress={handleSubmitQuiz} text="Submit Quiz" bgColor= '#022150' style={styles.button} />
       </View>
     </ScrollView>
   );

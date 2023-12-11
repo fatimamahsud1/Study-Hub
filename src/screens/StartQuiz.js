@@ -5,7 +5,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 const StartQuiz = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const selectedTopic = route.params?.selectedTopic || 'Default Topic';
+  const selectedTopic = route.params?.selectedTopic || 'General Questions';
 
   const handleStartQuiz = () => {
     // Navigate to Mcqs screen and pass the selected topic

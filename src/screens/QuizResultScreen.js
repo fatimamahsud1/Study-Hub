@@ -3,10 +3,24 @@ import { View, Text, StyleSheet} from 'react-native';
 import Button from '../components/Button';
 import McqsScreen from './McqsScreen';
 import QuizHome from './QuizHome';
+import { useNavigation } from '@react-navigation/native';
 
-const QuizResultScreen = ({ route, navigation }) => {
+
+
+const QuizResultScreen = ({ route }) => {
+  const navigation = useNavigation();
   const { userScore, correctAnswers, totalQuestions, elapsedMinutes, elapsedSeconds, feedbackData } = route.params;
   const correctCount = correctAnswers || 0;
+  const navigateToRetakeQuiz = () => {
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'McqsScreen' }],
+    });
+  };
+  
+  const navigateToQuizHome = () => {
+    navigation.navigate('QuizHome');
+  };
 
   return (
     <View style={styles.container}>
@@ -18,8 +32,8 @@ const QuizResultScreen = ({ route, navigation }) => {
       </View>
 
       <View style={styles.buttonContainer}>
-      <Button  text ="Retake Quiz" bgColor= '#022150'  textColortitle onPress={McqsScreen} />
-        <Button text ="Back to Home" bgColor= '#022150'  textColortitle onPress={QuizHome} />
+      <Button  text ="Retake Quiz" bgColor= '#022150'  textColortitle onPress={navigateToRetakeQuiz} />
+        <Button text ="Back to Home" bgColor= '#022150'  textColortitle onPress={navigateToQuizHome} />
       </View>
     </View>
   );

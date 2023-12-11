@@ -16,14 +16,20 @@ const DifficultyLevelsScreen = ({ route }) => {
 
   const navigateToQuizHome = () => {
     if (selectedDifficulty === 'Easy') {
-
       navigation.navigate('EasyLevelScreen', {
         selectedSubject: route.params?.selectedSubject || null,
         selectedDifficulty,
       });
-    } else {
-
+    } else if (selectedDifficulty === 'Medium') {
+      // Navigate to the Medium difficulty screen
+      // Add the corresponding screen name and parameters
       navigation.navigate('DifficultLevelScreen', {
+        selectedSubject: route.params?.selectedSubject || null,
+        selectedDifficulty,
+      });
+    } else if (selectedDifficulty === 'Hard') {
+      // Navigate to the SelectedTopicsScreen for Hard difficulty
+      navigation.navigate('SelectTopics', {
         selectedSubject: route.params?.selectedSubject || null,
         selectedDifficulty,
       });

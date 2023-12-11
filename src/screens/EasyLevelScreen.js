@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { View, Dimensions, Text, ScrollView, TouchableOpacity, StyleSheet, Button } from 'react-native';
+import { View, Dimensions, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import axios from 'axios';
 import cheerio from 'cheerio';
 import { RadioButton } from 'react-native-paper';
 import DropDownPicker from 'react-native-dropdown-picker';
 import EasyFeedbackScreen from './EasyFeedbackScreen';
-
+import SimpleHeader from '../components/SimpleHeader';
+import Button from '../components/Button';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -142,28 +143,13 @@ const EasyLevelScreen = ({ route, navigation }) => {
       <View style={styles.header}>
         <Text style={styles.headerText}>Time Elapsed: {timer.minutes} minutes {timer.seconds} seconds</Text>
       </View>
-      <DropDownPicker
-        items={[
-          { label: '10', value: 10 },
-          { label: '20', value: 20 },
-          { label: '30', value: 30 },
-          { label: '40', value: 40 },
-          { label: '50', value: 50 },
-        ]}
-        defaultValue={selectedQuestionsCount.toString()}
-        containerStyle={{ height: 40, margin: 10 }}
-        style={{ backgroundColor: '#fafafa' }}
-        itemStyle={{
-          justifyContent: 'flex-start',
-        }}
-        dropDownStyle={{ backgroundColor: '#fafafa' }}
-        onChangeItem={(item) => {
-          setSelectedQuestionsCount(Number(item.value));
-        }}
-      />
-      {displayedQuestions.map((question, questionIndex) => (
+     
+       {displayedQuestions.map((question, questionIndex) => (
         <View key={questionIndex} style={styles.questionContainer}>
+          {/* Add the question number label */}
+          <Text style={styles.questionNumber}>Question#{questionIndex + 1}</Text>
           <Text style={styles.questionText}>{question.text}</Text>
+          
           {question.choices.map((choice, choiceIndex) => (
             <TouchableOpacity
               key={choiceIndex}
@@ -189,7 +175,7 @@ const EasyLevelScreen = ({ route, navigation }) => {
         </View>
       ))}
       <View style={styles.buttonContainer}>
-        <Button title="Submit Quiz" onPress={handleSubmitQuiz} />
+        <Button text="Submit Quiz" bgColor= '#022150' onPress={handleSubmitQuiz} />
       </View>
     </ScrollView>
   );
@@ -211,6 +197,12 @@ const styles = StyleSheet.create({
   headerText: {
     color: 'white',
     fontSize: 13,
+  },
+  questionNumber: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 5,
+    color: '#022150',
   },
   questionContainer: {
     margin: 10,
