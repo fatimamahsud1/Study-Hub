@@ -1,7 +1,6 @@
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import QuizHome from '../screens/QuizHome';
-import BottomTabNavigation from './BottomTabNavigation';
 import DifficultyLevelsScreen from '../screens/DifficultyLevelsScreen';
 import EasyFeedbackScreen from '../screens/EasyFeedbackScreen';
 import OptionsScreen from '../screens/OptionsScreen';
@@ -26,11 +25,7 @@ const QuizStack = () => {
       component={QuizHome}
       options={{headerShown: false}}
     />
-    <Stack.Screen
-      name="Home"
-      component={BottomTabNavigation}
-      options={{headerShown: false}}
-    />
+  
     <Stack.Screen
       name="DifficultyLevelsScreen"
       component={DifficultyLevelsScreen}

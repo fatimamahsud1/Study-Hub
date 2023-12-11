@@ -6,3 +6,5 @@ export {default as Back} from './Back.svg';
 export {default as Icon2} from './icon2.svg';
 export {default as PP} from './pp.svg';
 export {default as PDF} from './pdf.svg';
+export {default as Quiz} from './quiz.svg';
+export {default as Quiz2} from './quiz2.svg';

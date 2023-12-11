@@ -7,6 +7,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
+  KeyboardAvoidingView,
 } from 'react-native';
 import { PermissionsAndroid, Platform, Alert } from 'react-native';
 import axios from 'axios';
@@ -178,6 +179,11 @@ const SlidesScreen1 = ({navigation}) => {
   };
   return (
     <>
+     <KeyboardAvoidingView
+      style={{ flex: 1 }} // Make KeyboardAvoidingView take up the entire screen
+      behavior={Platform.OS === "ios" ? "padding" : "height"} // Adjust the behavior based on the platform
+      keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0} // Adjust the vertical offset if necessary
+    >
       {isLoading ? (
         <View style={styles.loadingContainer}>
           {/* Animation or loading indicator here */}
@@ -232,6 +238,7 @@ const SlidesScreen1 = ({navigation}) => {
           )}
         </>
       )}
+      </KeyboardAvoidingView>
     </>
   );
 };
