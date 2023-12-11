@@ -23,7 +23,7 @@ import QuizResultScreen from '../screens/QuizResultScreen.js';
 import EasyLevelScreen from '../screens/EasyLevelScreen.js';
 import NumberSelectionScreen from '../screens/NumberSelectionScreen.js';
 import EasyFeedbackScreen from '../screens/EasyFeedbackScreen.js';
-
+import DifficultLevelScreen from '../screens/DifficultLevelScreen.js';
 
 
 const Stack = createStackNavigator();
@@ -137,6 +137,11 @@ const AuthNavigation = () => {
         <Stack.Screen
           name="NumberSelectionScreen"
           component={NumberSelectionScreen}
+          options={{headerShown: false}}
+        />
+         <Stack.Screen
+          name="DifficultLevelScreen"
+          component={DifficultLevelScreen}
           options={{headerShown: false}}
         />
         </Stack.Navigator>

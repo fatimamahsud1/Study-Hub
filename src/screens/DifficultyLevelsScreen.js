@@ -23,7 +23,7 @@ const DifficultyLevelsScreen = ({ route }) => {
       });
     } else {
 
-      navigation.navigate('SelectTopics', {
+      navigation.navigate('DifficultLevelScreen', {
         selectedSubject: route.params?.selectedSubject || null,
         selectedDifficulty,
       });
