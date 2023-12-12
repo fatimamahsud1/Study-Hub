@@ -24,6 +24,8 @@ import StackNavigator from './StackNavigator';
 import SlidesStack from './SlidesStack';
 import QuizStack from './QuizStack';
 import {PDF, Quiz, Quiz2} from '../assets/Icons';
+import Settings from '../screens/Settings';
+import AccountStack from './AccountStack';
 
 const Tab = createBottomTabNavigator();
 
@@ -180,9 +182,10 @@ export default function BottomTabNavigation({navigation}) {
         />
 
         <Tab.Screen
-          name={'Settings'}
-          component={QuizHome}
+          name={'Account'}
+          component={AccountStack}
           options={{
+            headerShown:false,
             tabBarIcon: ({focused}) => (
               <View
                 style={{
@@ -210,13 +213,13 @@ export default function BottomTabNavigation({navigation}) {
 
       <Animated.View
         style={{
-          width: getWidth() - 20,
+          width: getWidth() - 10,
           height: 3,
           backgroundColor: '#fe8c00',
           position: 'absolute',
           bottom: 67,
 
-          left: 40,
+          left: 45,
           borderRadius: 20,
           transform: [{translateX: tabOffsetValue}],
         }}></Animated.View>
