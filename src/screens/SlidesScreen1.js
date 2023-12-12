@@ -103,7 +103,7 @@ const SlidesScreen1 = ({navigation}) => {
         },
         {
           headers: {
-            Authorization: `Bearer`,
+            Authorization: `Bearer `,
             'Content-Type': 'application/json',
           },
         },

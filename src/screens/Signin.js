@@ -31,7 +31,10 @@ const Signin = ({navigation}) => {
       <View style={styles.switchContainer}>
         {/* Sign Up Button */}
         <TouchableOpacity
-          onPress={() => setIsSignIn(false)}
+          onPress={() => 
+            // setIsSignIn(false) 
+            navigation.navigate('Signup')
+          }
           style={[
             styles.switchButton,
             !isSignIn && styles.inactiveButton,
@@ -118,11 +121,11 @@ const Signin = ({navigation}) => {
                 </Text>
               </View>
             </TouchableOpacity>
-            <Text style={{color: '#969AA8', fontSize: 15, fontWeight:'bold', marginTop:5, alignSelf:'flex-end'}} onPress={()=>{navigation.navigate('ForgotPassword')}}>
+            <Text style={{color: '#969AA8', fontSize: 14, fontWeight:'bold', marginTop:5, alignSelf:'flex-end'}} onPress={()=>{navigation.navigate('ForgotPassword')}}>
             Forgot Password?
             </Text>
             <Text style={{marginVertical: 10, color: '#969AA8', fontSize: 12, fontWeight:'bold', marginTop:30,}}>
-              <Text style={{color:'#EFEFEF'}}> ---------------------- </Text>  Or Sign In with   <Text style={{color:'#EFEFEF'}}> ---------------------- </Text>
+              <Text style={{color:'#EFEFEF'}}> ----------- </Text>  Or Sign In with   <Text style={{color:'#EFEFEF'}}> ----------- </Text>
             </Text>
 
             <View
@@ -180,7 +183,7 @@ const Signin = ({navigation}) => {
 const styles = StyleSheet.create({
   text_footer: {
     color: 'black',
-    fontSize: 18,
+    fontSize: 16,
   },
   action: {
     flexDirection: 'row',

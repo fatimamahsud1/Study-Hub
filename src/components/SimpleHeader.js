@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
   },
   title: {
     color: 'white',
-    fontSize: 25,
+    fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'center', // Center the text
     justifyContent:'center',
