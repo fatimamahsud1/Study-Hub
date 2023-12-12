@@ -25,7 +25,6 @@ import NumberSelectionScreen from '../screens/NumberSelectionScreen.js';
 import EasyFeedbackScreen from '../screens/EasyFeedbackScreen.js';
 import DifficultLevelScreen from '../screens/DifficultLevelScreen.js';
 
-
 const Stack = createStackNavigator();
 const AuthNavigation = () => {
   const [isAppFirstLaunched, setIsAppFirstLaunched] = React.useState(null);
@@ -50,7 +49,7 @@ const AuthNavigation = () => {
 
 
   let initialRouteName = isAppFirstLaunched ? 'onboardingScreen' : 'Signup';
-  
+ 
   return (
     isAppFirstLaunched !== null && (
       <NavigationContainer>

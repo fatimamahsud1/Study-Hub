@@ -5,12 +5,39 @@ import {
   TouchableOpacity,
   StyleSheet,
   TextInput,
+  Alert,
 } from 'react-native';
 import {Google, Fb, Fb2} from '../assets/Icons';
 import LinearGradient from 'react-native-linear-gradient';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
-const Signin = ({navigation}) => {
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../../firebase'; // Make sure to import your Firebase auth instance
+
+const Signin = ({ navigation }) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const updateSecureTextEntry = () => {
+    setData({
+      ...data,
+      secureTextEntry: !data.secureTextEntry,
+    });
+  };
+  const handleSignIn = async () => {
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+
+      // If sign-in is successful, you can navigate to the next screen or perform additional actions
+      console.log('User signed in:', userCredential.user);
+      navigation.navigate('Bottom');
+    } catch (error) {
+      // Handle sign-in errors
+      console.error('Error signing in:', error.message);
+
+      // Display an alert for better user experience
+      Alert.alert('Sign In Failed', 'Invalid email or password. Please try again or sign up.');
+    }
+  };
   const [isSignIn, setIsSignIn] = useState(true); 
   const [data, setData] = React.useState({
     username: '',
@@ -20,18 +47,14 @@ const Signin = ({navigation}) => {
     secureTextEntry: true,
     confirm_secureTextEntry: true,
   });
-  const updateSecureTextEntry = () => {
-    setData({
-      ...data,
-      secureTextEntry: !data.secureTextEntry,
-    });
-  };
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
-      <View style={styles.switchContainer}>
-        {/* Sign Up Button */}
-        <TouchableOpacity
-          onPress={() => setIsSignIn(false)}
+          <View style={styles.switchContainer}>
+          <TouchableOpacity
+          onPress={() => 
+            // setIsSignIn(false) 
+            navigation.navigate('Signup')
+          }
           style={[
             styles.switchButton,
             !isSignIn && styles.inactiveButton,
@@ -41,8 +64,6 @@ const Signin = ({navigation}) => {
             Sign Up
           </Text>
         </TouchableOpacity>
-
-        {/* Sign In Button */}
         <TouchableOpacity
           onPress={() => setIsSignIn(true)}
           style={[
@@ -56,23 +77,25 @@ const Signin = ({navigation}) => {
         </TouchableOpacity>
       </View>
 
+
+
       <View style={{marginTop: 100, marginHorizontal: 30}}>
-        <Text style={styles.text_footer}>
-          Email
-          <Text style={{color: 'red'}}> *</Text>
-        </Text>
-        <View style={styles.action}>
-          <FontAwesome name="envelope" color="#05375a" size={20} />
-          <TextInput
+      <Text style={styles.text_footer}>
+      Email
+      <Text style={{color: 'red'}}> *</Text>
+      </Text>
+      <View style={styles.action}>
+      <FontAwesome name="envelope" color="#05375a" size={20} />
+      <TextInput
             placeholder="Enter Your Email"
             style={styles.textInput}
             autoCapitalize="none"
-            onChangeText={val => textInputChange(val)}
-          />
-        </View>
-      </View>
-      <View style={{marginTop: 1, marginHorizontal: 30}}>
-      <Text
+            onChangeText={(text) => setEmail(text)}
+            />
+            </View>
+            </View>
+            <View style={{marginTop: 1, marginHorizontal: 30}}>
+            <Text
             style={[
               styles.text_footer,
               {
@@ -88,9 +111,9 @@ const Signin = ({navigation}) => {
               secureTextEntry={data.secureTextEntry ? true : false}
               style={styles.textInput}
               autoCapitalize="none"
-              onChangeText={val => handlePasswordChange(val)}
-            />
-            <TouchableOpacity onPress={updateSecureTextEntry}>
+              onChangeText={(text) => setPassword(text)}
+              />
+      <TouchableOpacity onPress={updateSecureTextEntry}>
               {data.secureTextEntry ? (
                 <Feather name="eye-off" color="grey" size={20} />
               ) : (
@@ -102,9 +125,7 @@ const Signin = ({navigation}) => {
       <View style={styles.button}>
       <TouchableOpacity
               style={styles.signIn}
-              onPress={() => {
-                navigation.navigate('Bottom');
-              }}>
+              onPress={handleSignIn}>
               <View
                 style={styles.signIn}>
                 <Text
@@ -118,11 +139,14 @@ const Signin = ({navigation}) => {
                 </Text>
               </View>
             </TouchableOpacity>
-            <Text style={{color: '#969AA8', fontSize: 15, fontWeight:'bold', marginTop:5, alignSelf:'flex-end'}} onPress={()=>{navigation.navigate('ForgotPassword')}}>
+
+
+
+            <Text style={{color: '#969AA8', fontSize: 14, fontWeight:'bold', marginTop:5, alignSelf:'flex-end'}} onPress={()=>{navigation.navigate('ForgotPassword')}}>
             Forgot Password?
             </Text>
             <Text style={{marginVertical: 10, color: '#969AA8', fontSize: 12, fontWeight:'bold', marginTop:30,}}>
-              <Text style={{color:'#EFEFEF'}}> ---------------------- </Text>  Or Sign In with   <Text style={{color:'#EFEFEF'}}> ---------------------- </Text>
+              <Text style={{color:'#EFEFEF'}}> ----------- </Text>  Or Sign In with   <Text style={{color:'#EFEFEF'}}> ----------- </Text>
             </Text>
 
             <View
@@ -180,7 +204,7 @@ const Signin = ({navigation}) => {
 const styles = StyleSheet.create({
   text_footer: {
     color: 'black',
-    fontSize: 18,
+    fontSize: 16,
   },
   action: {
     flexDirection: 'row',
