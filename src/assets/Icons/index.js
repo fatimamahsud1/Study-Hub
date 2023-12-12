@@ -8,3 +8,8 @@ export {default as PP} from './pp.svg';
 export {default as PDF} from './pdf.svg';
 export {default as Quiz} from './quiz.svg';
 export {default as Quiz2} from './quiz2.svg';
+export {default as Camera} from './camera.svg';
+export {default as Gallery} from './Gallery.svg';
+export {default as Icon} from './icon.svg';
+
+
