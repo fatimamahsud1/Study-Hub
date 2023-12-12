@@ -125,11 +125,11 @@ const Signup = ({navigation}) => {
         <ScrollView>
           <Text
             style={{
-              fontSize: 24,
+              fontSize: 22,
               color: COLORS.primary,
               fontWeight: '600',
               alignSelf: 'center',
-              marginTop: 20,
+              
             }}>
             Get Started Free
           </Text>
@@ -139,7 +139,7 @@ const Signup = ({navigation}) => {
               fontSize: 14,
               alignSelf: 'center',
               marginTop: 5,
-              marginBottom: 55,
+              marginBottom: 45,
             }}>
             Let’s introduce yourself for explore more.
           </Text>
@@ -320,18 +320,18 @@ const styles = StyleSheet.create({
   text_header: {
     color: 'white',
     fontWeight: 'bold',
-    fontSize: 20,
+    fontSize: 18,
   },
   text_footer: {
     color: '#05375a',
-    fontSize: 18,
+    fontSize: 16,
   },
   action: {
     flexDirection: 'row',
     marginTop: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#f2f2f2',
-    paddingBottom: 5,
+    // paddingBottom: 5,
   },
   textInput: {
     flex: 1,

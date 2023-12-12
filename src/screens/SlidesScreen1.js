@@ -103,7 +103,7 @@ const SlidesScreen1 = ({navigation}) => {
         },
         {
           headers: {
-            Authorization: `Bearer`,
+            Authorization: `Bearer `,
             'Content-Type': 'application/json',
           },
         },
@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#eee8f4',
   },
   textSign: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
     textAlign: 'center',
   },

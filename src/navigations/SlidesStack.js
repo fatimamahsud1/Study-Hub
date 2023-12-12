@@ -9,7 +9,7 @@ import {BottomTabBar} from '@react-navigation/bottom-tabs';
 const Stack = createStackNavigator();
 
 function getRouteName(route) {
-  // If the focused route is not found, we need to return the initial route name
+ 
   return getFocusedRouteNameFromRoute(route) ?? 'Slides';
 }
 
