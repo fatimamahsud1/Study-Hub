@@ -228,7 +228,10 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     margin: 20,
-    backgroundColor: '#022150',
+    marginBottom:120,
+    width:'100%',
+    height:'8%'
+
   },
 });
 

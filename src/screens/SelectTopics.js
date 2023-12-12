@@ -4,6 +4,7 @@ import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import SimpleHeader from '../components/SimpleHeader';
+import Button from '../components/Button';
 
 const topicsWithUrls = {
   array: 'https://www.geeksforgeeks.org/data-structure-gq/top-mcqs-on-array-data-structure-with-answers/',

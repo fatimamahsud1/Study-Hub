@@ -1,183 +1,241 @@
 import React, { useEffect, useState } from 'react';
-import { View, Dimensions, Text, ScrollView, TouchableOpacity, StyleSheet, Button } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import axios from 'axios';
+import { useNavigation } from '@react-navigation/native';
 import cheerio from 'cheerio';
+import { RadioButton } from 'react-native-paper';
+import Button from '../components/Button';
 
-
-const DifficultLevelScreen = ({ route, navigation }) => {
-  const [questions, setQuestions] = useState([]);
-  const [shuffledQuestions, setShuffledQuestions] = useState([]);
-  const [selectedOptions, setSelectedOptions] = useState({});
+const DifficultLevelScreen = () => {
+  const [mcqsQuestions, setMcqsQuestions] = useState([]);
+  const [mcqsOptions, setMcqsOptions] = useState([]);
+  const [mcqsCorrectAnswers, setMcqsCorrectAnswers] = useState([]);
+  const [selectedAnswers, setSelectedAnswers] = useState({});
+  const [isQuizSubmitted, setIsQuizSubmitted] = useState(false);
   const [timer, setTimer] = useState({ minutes: 0, seconds: 0 });
-  const [intervalId, setIntervalId] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [selectedQuestionsCount, setSelectedQuestionsCount] = useState(10); // Add this line
+  const navigation = useNavigation();
+  let interval;
 
-  const selectedTopic = route.params?.selectedTopic || 'Default Topic';
-
+  const correctAnswersList = [
+    "Container that stores the elements of similar types",
+    "int javatpoint[10];",
+    "int arr[2] = {10, 20}",
+    "Easier to access the elements in an array",
+    "Stack and Queue data structures can be implemented through an array.",
+    "Insert",
+    "Overflow",
+    "Underflow",
+    "Recursion",
+    "Queue",
+    "Stack",
+    "ABC+*",
+    "+A*BC",
+    "First node",
+    "Circular Queue",
+    "3241",
+    "Linear Queue",
+    "FIFO principle",
+    "Process with different priority can be easily handled",
+    "Both a and b",
+    "LIFO",
+    "Balancing of symbols",
+    "At the tail position of the linked list",
+    "3",
+    "Data is transferred asynchronously",
+    "In enqueue operation, new nodes are inserted from the end and in dequeue operation, nodes are deleted from the beginning.",
+    "Overflow",
+    "Heap",
+    "FIFO",
+    "Deletion is easier",
+    "Queue",
+    "Input-restricted queue",
+    "Both a and b",
+    "Underflow",
+    "Stack",
+    "Circular queue",
+    "",
+    "O(1)",
+    "O(1)",
+    "O(1)",
+    "O(1)",
+    "O(1)",
+    "We can traverse in both the directions.",
+    "It stores the addresses of the next and the previous node",
+    "3",
+    "Inorder traversal",
+    "The left and right sub trees should also be a binary search tree",
+    "A tree which is binary search tree and height balanced tree.",
+    "Red Black trees are not strictly balanced",
+    "Both b and c",
+    "A tree which is a binary search tree but not strictly balanced tree.",
+    "Black, if the new node is not a root node",
+    "",
+  ];
   useEffect(() => {
-    const shuffleArray = (array) => {
-      const shuffledArray = [...array];
-      for (let i = shuffledArray.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('https://www.javatpoint.com/data-structure-mcq', { timeout: 10000 });
+        const htmlContent = response.data;
+        const $ = cheerio.load(htmlContent);
+
+        const questions = [];
+        const options = [];
+
+        $('p.pq').each((index, element) => {
+          const questionText = $(element).text().trim();
+          questions.push(questionText);
+
+          const optionsForQuestion = [];
+          $(element)
+            .next('ol.pointsa')
+            .find('li')
+            .each((optionIndex, optionElement) => {
+              optionsForQuestion.push($(optionElement).text().trim());
+            });
+
+          options.push(optionsForQuestion);
+        });
+
+        setMcqsQuestions(questions);
+        setMcqsOptions(options);
+      } catch (error) {
+        console.error('Error fetching data:', error.message);
+        console.error('Error details:', error);
       }
-      return shuffledArray;
     };
 
-    const scrapeQuestions = async (page) => {
-      try {
-        const response = await axios.get(`https://www.geeksforgeeks.org/top-50-data-structures-mcqs-with-answers/${page}/`);
-        const $ = cheerio.load(response.data);
+    fetchData();
+  }, []);
 
-        const newQuestions = [];
-        const correctOptions = [];
+ 
+  const handleAnswerChange = (questionIndex, choiceIndex) => {
+    const newSelectedAnswers = { ...selectedAnswers };
+    newSelectedAnswers[questionIndex] = choiceIndex;
+    setSelectedAnswers(newSelectedAnswers);
+  };
 
-        $('div.mtq_question_text').each((index, questionElement) => {
-          const questionText = $(questionElement).text().trim();
-          const choices = [];
-          let correctOptionText = null;
+  const submitAnswers = () => {
+    setIsQuizSubmitted(true);
 
-          $(`tr[id^="mtq_row-${index + 1}-"]`).each((index, choiceElement) => {
-            const choiceText = $(choiceElement).find('div.mtq_answer_text').text().trim();
-            choices.push(choiceText);
+    const userScore = mcqsQuestions.reduce(
+      (score, question, questionIndex) =>
+        selectedAnswers[questionIndex] === correctAnswersList.indexOf(mcqsOptions[questionIndex][question]) ? score + 1 : score,
+      0
+    );
 
-            if ($(choiceElement).find('div.mtq_correct_marker').length > 0) {
-              correctOptionText = choiceText;
-            }
-          });
+    navigation.navigate('DifficultLevelFeedbackScreen', {
+      userScore,
+      correctAnswers: userScore,
+      totalQuestions: mcqsQuestions.length,
+      elapsedMinutes: timer.minutes,
+      elapsedSeconds: timer.seconds,
+      feedbackData: { correct: userScore, incorrect: mcqsQuestions.length - userScore },
+    });
+  };
 
-          const explanationElement = $(`div#mtq_question_explanation-${index + 1}`);
-let explanation = null;
+  useEffect(() => {
+    interval = setInterval(() => {
+      setTimer((prevTimer) => {
+        const newSeconds = prevTimer.seconds + 1;
+        const newMinutes = Math.floor(newSeconds / 60);
+        return {
+          minutes: newMinutes,
+          seconds: newSeconds % 60,
+        };
+      });
+    }, 1000);
 
-if (explanationElement.length > 0) {
-  explanation = explanationElement.find('div.mtq_explanation-text').contents().filter(function () {
-    return this.nodeType === 3;
-  }).text().trim();
-}
+    return () => clearInterval(interval);
+  }, []);
 
-newQuestions.push({ text: questionText, choices, correctIndex: choices.indexOf(correctOptionText), explanation });
-correctOptions.push(correctOptionText);
-});
+  return (
+    <ScrollView style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.headerText}>Time Elapsed: {timer.minutes} minutes {timer.seconds} seconds</Text>
+      </View>
 
-setQuestions((prevQuestions) => [...prevQuestions, ...newQuestions]);
-setShuffledQuestions(shuffleArray([...questions, ...newQuestions]));
-} catch (error) {
-console.error('Error fetching data:', error.message);
-}
-};
+      {mcqsQuestions.map((question, questionIndex) => (
+        <View key={questionIndex} style={styles.questionContainer}>
+          <Text style={styles.questionText}>{`Question ${questionIndex + 1}: ${question}`}</Text>
+          {mcqsOptions[questionIndex] &&
+            mcqsOptions[questionIndex].map((choice, choiceIndex) => (
+              <TouchableOpacity
+                key={choiceIndex}
+                style={[
+                  styles.choiceContainer,
+                  isQuizSubmitted &&
+                    selectedAnswers[questionIndex] === choiceIndex && {
+                      backgroundColor: choiceIndex === correctAnswersList.indexOf(question) ? '#4CAF50' : '#FF5252',
+                    },
+                ]}
+                onPress={() => handleAnswerChange(questionIndex, choiceIndex)}
+              >
+                <View style={styles.radioButtonContainer}>
+                  <RadioButton
+                    value={choiceIndex}
+                    status={selectedAnswers[questionIndex] === choiceIndex ? 'checked' : 'unchecked'}
+                    onPress={() => handleAnswerChange(questionIndex, choiceIndex)}
+                    color="#022150"
+                  />
+                </View>
+                <Text style={styles.choiceText}>{`${choice}`}</Text>
+              </TouchableOpacity>
+            ))}
+        </View>
+      ))}
 
-const fetchAllPages = async () => {
-let page = 1;
-let hasMorePages = true;
-
-while (hasMorePages) {
-await scrapeQuestions(page);
-page++;
-const nextPageButton = $(`a.page.quiz_navigation_btn.next_quiz[data-pageid="${page * 100000}"]`);
-hasMorePages = nextPageButton.length > 0;
-}
-};
-
-fetchAllPages();
-}, [selectedTopic]);
-
-useEffect(() => {
-const interval = setInterval(() => {
-setTimer((prevTimer) => {
-const newSeconds = prevTimer.seconds + 1;
-const newMinutes = Math.floor(newSeconds / 60);
-return {
-minutes: newMinutes,
-seconds: newSeconds % 60,
-};
-});
-}, 1000);
-
-setIntervalId(interval);
-
-return () => clearInterval(interval);
-}, []);
-
-const handleSubmitQuiz = () => {
-clearInterval(intervalId);
-
-// Implementation of handling quiz submission
-// ...
-
-navigation.navigate('EasyFeedbackScreen', {
-// Pass relevant data to the feedback screen
-// ...
-});
-};
-
-return (
-<ScrollView style={styles.container}>
-{shuffledQuestions.map((question, questionIndex) => (
-<View key={questionIndex} style={styles.questionContainer}>
-<Text style={styles.questionText}>{question.text}</Text>
-{question.choices.map((choice, choiceIndex) => (
-<TouchableOpacity
-key={choiceIndex}
-style={styles.choiceContainer}
-onPress={() => {
-const newSelectedOptions = { ...selectedOptions };
-newSelectedOptions[questionIndex] = choiceIndex;
-setSelectedOptions(newSelectedOptions);
-}}
->
-<Text style={styles.choiceText}>{`${choice}`}</Text>
-</TouchableOpacity>
-))}
-</View>
-))}
-
-<TouchableOpacity style={styles.submitButton} onPress={handleSubmitQuiz}>
-<Text style={styles.submitButtonText}>Submit Quiz</Text>
-</TouchableOpacity>
-</ScrollView>
-);
+      <View style={styles.buttonContainer}>
+        <Button onPress={submitAnswers} text="Submit Quiz" bgColor="#022150" style={styles.button} />
+      </View>
+    </ScrollView>
+  );
 };
 
 const styles = StyleSheet.create({
-container: {
-flex: 1,
-backgroundColor: '#ecf0f1',
-padding: 10,
-},
-questionContainer: {
-backgroundColor: '#fff',
-borderRadius: 8,
-elevation: 3,
-marginBottom: 10,
-padding: 15,
-},
-questionText: {
-fontSize: 16,
-fontWeight: 'bold',
-marginBottom: 10,
-},
-choiceContainer: {
-flexDirection: 'row',
-alignItems: 'center',
-marginVertical: 5,
-},
-choiceText: {
-marginLeft: 8,
-color: '#333',
-},
-submitButton: {
-backgroundColor: '#3498db',
-padding: 15,
-alignItems: 'center',
-marginTop: 20,
-borderRadius: 8,
-},
-submitButtonText: {
-color: '#fff',
-fontSize: 16,
-fontWeight: 'bold',
-},
+  container: {
+    flex: 1,
+    backgroundColor: '#f0f0f0',
+  },
+  headerText: {
+    color: 'white',
+    fontSize: 16,
+  },
+  questionContainer: {
+    margin: 10,
+    padding: 10,
+    backgroundColor: 'white',
+    borderRadius: 8,
+    elevation: 3,
+  },
+  header: {
+    backgroundColor: '#022150',
+    padding: 10,
+    alignItems: 'center',
+  },
+  questionText: {
+    fontSize: 16,
+    color: '#022150',
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  choiceContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 5,
+  },
+  choiceText: {
+    marginLeft: 10,
+    color: '#022150',
+  },
+  buttonContainer: {
+    margin: 20,
+    marginBottom: 120,
+    width: '100%',
+    height: '8%',
+  },
+  radioButtonContainer: {
+    marginRight: 10,
+  },
 });
 
 export default DifficultLevelScreen;
