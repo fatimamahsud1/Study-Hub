@@ -18,7 +18,6 @@ import SimpleHeader from '../components/SimpleHeader';
 import RNFS from 'react-native-fs'; // Add this
 import FileViewer from 'react-native-file-viewer'; // Add this
 import {Buffer} from 'buffer';
-// import Share from 'react-native-share';
 const SlidesScreen1 = ({navigation}) => {
   const [response, setResponse] = useState('');
   const [userInput, setUserInput] = useState('');
@@ -53,104 +52,45 @@ const SlidesScreen1 = ({navigation}) => {
     }
   };
   const formatDataForPPT = text => {
-    // Split the text by some delimiter or logic to separate slides
-    // This is a simple example and may need to be adjusted based on your actual text format
-    const slideTexts = text.split('\n\n'); // Example: Split by double newline
-
-    const slides = slideTexts.map((slideText, index) => {
-      // Further split or process each slideText to separate title from content
-      // This is a placeholder logic
-      const title = `Slide ${index + 1}`;
-      const content = slideText.split('\n'); // Example: Split by newline
-
-      return {title, content};
+    const slides = text.split('\n\n').map(slideText => {
+      const content = slideText.split('\n');
+      return { content };
     });
-
-    return {slides};
-  };
-  const saveFileToPublicDirectory = async (flaskResponseData) => {
-    try {
-      if (Platform.OS === 'android') {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-          {
-            title: "Storage Permission Required",
-            message: "This app needs access to your storage to download files",
-          }
-        );
-        if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-          console.log('Storage permission denied');
-          return;
-        }
-      }
   
-      const path = `${RNFS.DownloadDirectoryPath}/presentation.pptx`;
-      await RNFS.writeFile(path, flaskResponseData, 'base64');
-      console.log('File saved to:', path);
-      Alert.alert('File Saved', `The presentation has been saved to your Downloads folder.`);
-    } catch (error) {
-      console.error('Error saving file:', error);
-    }
+    return { slides };
   };
+  
   
 
   const sendToFlaskAPI = async content => {
-    content.slides.forEach((slide, index) => {
-      console.log(`Slide ${index + 1} Title:`, slide.title);
-      console.log(`Slide ${index + 1} Content:`, slide.content);
-    });
-
     try {
       const flaskResponse = await axios({
-        url: 'http://10.0.2.2:5000/create_ppt',
+        url: 'http://192.168.18.245:5000/create_ppt',
         method: 'POST',
         data: content,
-        responseType: 'arraybuffer',
+        responseType: 'arraybuffer',  // Important for receiving binary data
       });
-
-      console.log(typeof flaskResponse.data, flaskResponse.data);
-      console.log('Document directory path:', RNFS.DocumentDirectoryPath);
-
-      const localFile = `${RNFS.DocumentDirectoryPath}/presentation.pptx`;
-
-      console.log('Local file path:', localFile);
-      console.log('Response data length:', flaskResponse.data.byteLength);
-      console.log('Response headers:', flaskResponse.headers);
-
-      // const base64String = flaskResponse.data.slice(0, 50).toString('base64');
-      // console.log('Data sample in Base64:', base64String);
-
-      const entireData = new Uint8Array(flaskResponse.data);
-      const entireBase64String = Buffer.from(entireData).toString('base64');
-
-      saveFileToPublicDirectory(entireBase64String);
-    
-      
-
-
-
-
-      // try {
-      //   await RNFS.writeFile(localFile, entireBase64String, 'base64');
-      //   console.log('File written to:', localFile);
-      //   FileViewer.open(localFile)
-      //     .then(() => console.log('File opened successfully'))
-      //     .catch(error => console.error('Error opening file:', error));
-      // } catch (error) {
-      //   console.error('Error writing file:', error);
-      // }
+  
+      const base64String = Buffer.from(flaskResponse.data, 'binary').toString('base64');
+      const path = `${RNFS.DocumentDirectoryPath}/presentation.pptx`;
+  
+      await RNFS.writeFile(path, base64String, 'base64');
+      console.log('File saved to:', path);
+  
+      // Open the file after saving
+      FileViewer.open(path, { 
+        showOpenWithDialog: true, 
+        showAppsSuggestions: true, 
+        mimeType: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' 
+      })
+      .then(() => console.log('File opened successfully'))
+      .catch(error => console.error('Error opening file:', error));
+  
     } catch (error) {
-      if (error.response) {
-        console.log('Response data:', error.response.data);
-        console.log('Response status:', error.response.status);
-        console.log('Response headers:', error.response.headers);
-      } else if (error.request) {
-        console.log('Request was made but no response received', error.request);
-      } else {
-        console.log('Error setting up the request', error.message);
-      }
+      console.error('Error in sendToFlaskAPI:', error);
     }
   };
+  
 
   const fetchAIResponse1 = async () => {
     setIsLoading(true);
@@ -163,7 +103,7 @@ const SlidesScreen1 = ({navigation}) => {
         },
         {
           headers: {
-            Authorization: `Bearer `,
+            Authorization: `Bearer`,
             'Content-Type': 'application/json',
           },
         },

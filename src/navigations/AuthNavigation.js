@@ -49,7 +49,7 @@ const AuthNavigation = () => {
   }, []);
 
 
-  let initialRouteName = isAppFirstLaunched ? 'Signup' : 'onboardingScreen';
+  let initialRouteName = isAppFirstLaunched ? 'onboardingScreen' : 'Signup';
   
   return (
     isAppFirstLaunched !== null && (

@@ -27,7 +27,7 @@ import {PDF, Quiz, Quiz2} from '../assets/Icons';
 
 const Tab = createBottomTabNavigator();
 
-export default function BottomTabNavigation() {
+export default function BottomTabNavigation({navigation}) {
   const tabOffsetY = useRef(
     new Animated.Value(Dimensions.get('window').height),
   ).current;
@@ -122,33 +122,41 @@ export default function BottomTabNavigation() {
         {}
 
         <Tab.Screen
-          name={'Scan'}
-          component={Scan}
-          options={{
-            headerShown: false,
-            tabBarIcon: ({focused}) => (
-              <TouchableOpacity>
-                <View
-                  style={{
-                    width: 55,
-                    height: 55,
-                    backgroundColor: '#fe8c00',
-                    borderRadius: 30,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    marginBottom: Platform.OS == 'android' ? 50 : 30,
-                  }}>
-                  <Image
-                    source={plus}
-                    style={{
-                      width: 32,
-                      height: 32,
-                      tintColor: 'white',
-                    }}></Image>
-                </View>
-              </TouchableOpacity>
-            ),
-          }}></Tab.Screen>
+  name={'Scan'}
+  component={Scan}
+  options={{
+    headerShown: false,
+    tabBarIcon: ({ focused }) => (
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate('Scan')
+        }}
+      >
+        <View
+          style={{
+            width: 55,
+            height: 55,
+            backgroundColor: '#fe8c00',
+            borderRadius: 30,
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginBottom: Platform.OS == 'android' ? 50 : 30,
+          }}
+        >
+          <Image
+            source={plus}
+            style={{
+              width: 32,
+              height: 32,
+              tintColor: 'white',
+            }}
+          ></Image>
+        </View>
+      </TouchableOpacity>
+    ),
+  }}
+/>
+
 
         <Tab.Screen
           name={'Quiz'}
