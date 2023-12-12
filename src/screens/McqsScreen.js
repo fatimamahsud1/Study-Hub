@@ -175,7 +175,7 @@ const McqsScreen = ({ route, navigation }) => {
         </View>
       ))}
       <View style={styles.buttonContainer}>
-      <Button onPress={handleSubmitQuiz} text="Submit Quiz" bgColor= '#022150' style={styles.button} />
+      <Button onPress={handleSubmitQuiz} text="Submit Quiz" bgColor= '#022150' />
       </View>
     </ScrollView>
   );
@@ -218,7 +218,10 @@ const styles = StyleSheet.create({
     color: '#022150',
   },
   buttonContainer: {
-    margin: 20,
+    marginBottom:120,
+    width:'100%',
+    height:'8%'
+
   },
 });
 

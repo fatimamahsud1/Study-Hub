@@ -11,7 +11,7 @@ import QuizResultScreen from '../screens/QuizResultScreen';
 import EasyLevelScreen from '../screens/EasyLevelScreen';
 import NumberSelectionScreen from '../screens/NumberSelectionScreen';
 import DifficultLevelScreen from '../screens/DifficultLevelScreen';
-
+import DifficultLevelFeedbackScreen from '../screens/DifficultLevelFeedbackScreen';
 
 const Stack = createStackNavigator();
 
@@ -75,6 +75,11 @@ const QuizStack = () => {
      <Stack.Screen
           name="DifficultLevelScreen"
           component={DifficultLevelScreen}
+          options={{headerShown: false}}
+        />
+          <Stack.Screen
+          name="DifficultLevelFeedbackScreen"
+          component={DifficultLevelFeedbackScreen}
           options={{headerShown: false}}
         />
   </Stack.Navigator>
