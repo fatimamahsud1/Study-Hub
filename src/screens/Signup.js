@@ -1,4 +1,4 @@
-import React, {useLayoutEffect} from 'react';
+import React, {useEffect, useLayoutEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -8,23 +8,63 @@ import {
   StyleSheet,
   ScrollView,
   StatusBar,
+  Alert
 } from 'react-native';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../../firebase'; // Make sure to import your Firebase auth instance
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {Google, Fb} from '../assets/Icons';
 import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { GoogleSignin, GoogleSigninButton } from 'react-native-google-signin';
+
 import Feather from 'react-native-vector-icons/Feather';
 const COLORS = {primary: '#022150', white: '#fff', blue: '#3E5C89'};
 const Signup = ({navigation}) => {
-  const [data, setData] = React.useState({
-    username: '',
-    password: '',
-    confirm_password: '',
-    check_textInputChange: false,
-    secureTextEntry: true,
-    confirm_secureTextEntry: true,
-  });
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+
+  GoogleSignin.configure();
+
+  const handleGoogleSignIn = async () => {
+    try {
+      await GoogleSignin.hasPlayServices();
+      const { idToken } = await GoogleSignin.signIn();
+      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+      await auth().signInWithCredential(googleCredential);
+    } catch (error) {
+      Alert.alert('Error', error.message);
+    }
+  };
+  useEffect(() => {
+    // Initialize Google Sign-In configuration
+    GoogleSignin.configure({
+      webClientId: 'YOUR_WEB_CLIENT_ID',
+      offlineAccess: true,
+    });
+  }, []);
+  const handleSignUp = async () => {
+    try {
+      if (email.trim() === '' || password.trim() === '' || confirmPassword.trim() === '') {
+        Alert.alert('Error', 'Please enter all fields');
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        Alert.alert('Error', 'Passwords do not match');
+        return;
+      }
+
+      await createUserWithEmailAndPassword(auth, email, password);
+
+      Alert.alert('Success', 'Account created successfully');
+      navigation.navigate('SignIn');
+    } catch (error) {
+      Alert.alert('Error', error.message);
+    }
+  };
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -69,49 +109,9 @@ const Signup = ({navigation}) => {
     });
   }, [navigation]);
 
-  const textInputChange = val => {
-    if (val.length !== 0) {
-      setData({
-        ...data,
-        username: val,
-        check_textInputChange: true,
-      });
-    } else {
-      setData({
-        ...data,
-        username: val,
-        check_textInputChange: false,
-      });
-    }
-  };
 
-  const handlePasswordChange = val => {
-    setData({
-      ...data,
-      password: val,
-    });
-  };
 
-  const handleConfirmPasswordChange = val => {
-    setData({
-      ...data,
-      confirm_password: val,
-    });
-  };
 
-  const updateSecureTextEntry = () => {
-    setData({
-      ...data,
-      secureTextEntry: !data.secureTextEntry,
-    });
-  };
-
-  const updateConfirmSecureTextEntry = () => {
-    setData({
-      ...data,
-      confirm_secureTextEntry: !data.confirm_secureTextEntry,
-    });
-  };
 
   return (
     <View style={styles.container}>
@@ -143,20 +143,23 @@ const Signup = ({navigation}) => {
             }}>
             Let’s introduce yourself for explore more.
           </Text>
-          <Text style={styles.text_footer}>Username</Text>
+          <Text style={styles.text_footer}>Email</Text>
           <View style={styles.action}>
             <FontAwesome name="user-o" color="#05375a" size={20} />
-            <TextInput
-              placeholder="Your Username"
+          
+                <TextInput
               style={styles.textInput}
-              autoCapitalize="none"
-              onChangeText={val => textInputChange(val)}
-            />
-            {data.check_textInputChange ? (
+              placeholder="Enter Email"
+        value={email}
+        onChangeText={(text) => setEmail(text)}
+        autoCapitalize="none"
+      />
+
+            {/* {data.check_textInputChange ? (
               <Animatable.View animation="bounceIn">
                 <Feather name="check-circle" color="green" size={20} />
               </Animatable.View>
-            ) : null}
+            ) : null} */}
           </View>
 
           <Text
@@ -172,18 +175,21 @@ const Signup = ({navigation}) => {
             <Feather name="lock" color="#05375a" size={20} />
             <TextInput
               placeholder="Your Password"
-              secureTextEntry={data.secureTextEntry ? true : false}
+              secureTextEntry
+              value={password}
               style={styles.textInput}
               autoCapitalize="none"
-              onChangeText={val => handlePasswordChange(val)}
-            />
+              onChangeText={(text) => setPassword(text)}
+              />
+
+{/* 
             <TouchableOpacity onPress={updateSecureTextEntry}>
               {data.secureTextEntry ? (
                 <Feather name="eye-off" color="grey" size={20} />
               ) : (
                 <Feather name="eye" color="grey" size={20} />
               )}
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
 
           <Text
@@ -197,28 +203,27 @@ const Signup = ({navigation}) => {
           </Text>
           <View style={styles.action}>
             <Feather name="lock" color="#05375a" size={20} />
-            <TextInput
-              placeholder="Confirm Your Password"
-              secureTextEntry={data.confirm_secureTextEntry ? true : false}
+          
+             <TextInput
               style={styles.textInput}
-              autoCapitalize="none"
-              onChangeText={val => handleConfirmPasswordChange(val)}
-            />
-            <TouchableOpacity onPress={updateConfirmSecureTextEntry}>
+              placeholder="Confirm Password"
+        value={confirmPassword}
+        onChangeText={(text) => setConfirmPassword(text)}
+        secureTextEntry
+      />
+            {/* <TouchableOpacity onPress={updateConfirmSecureTextEntry}>
               {data.secureTextEntry ? (
                 <Feather name="eye-off" color="grey" size={20} />
               ) : (
                 <Feather name="eye" color="grey" size={20} />
               )}
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
 
           <View style={styles.button}>
             <TouchableOpacity
               style={styles.signIn}
-              onPress={() => {
-                navigation.navigate('Signin');
-              }}>
+              onPress={handleSignUp}>
               <View
                 style={styles.signIn}>
                 <Text
@@ -237,6 +242,7 @@ const Signup = ({navigation}) => {
               Or Sign Up with
             </Text>
             <View style={{flexDirection: 'row'}}>
+              <TouchableOpacity  onPress={handleGoogleSignIn}>
               <View
                 style={{
                   borderWidth: 1,
@@ -249,7 +255,13 @@ const Signup = ({navigation}) => {
                   marginHorizontal: 5,
                   flexDirection: 'row',
                 }}>
-                <Google width={23} height={23} style={{marginTop: 1}} />
+                     <GoogleSigninButton
+        style={styles.googleButton}
+        size={GoogleSigninButton.Size.Wide}
+        color={GoogleSigninButton.Color.Dark}
+        onPress={handleGoogleSignIn}
+      />
+                {/* <Google width={23} height={23} style={{marginTop: 1}} />
                 <Text
                   style={{
                     marginHorizontal: 10,
@@ -257,13 +269,13 @@ const Signup = ({navigation}) => {
                     fontSize: 16,
                   }}>
                   Google
-                </Text>
+                </Text> */}
               </View>
+              </TouchableOpacity>
               <View
                 style={{
                   borderWidth: 1,
                   borderColor: '#282534',
-
                   width: '45%',
                   height: 50,
                   justifyContent: 'center',
@@ -299,6 +311,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#022150',
+  },
+  googleButton:{
+      borderWidth: 1,
+      borderColor: '#D8D8D8',
+      width: '200%',
+      height: 50,
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderRadius: 10,
+      flexDirection: 'row',
+
   },
   header: {
     flex: 0.6,

@@ -3,10 +3,8 @@ import { View, Dimensions, Text, ScrollView, TouchableOpacity, StyleSheet } from
 import axios from 'axios';
 import cheerio from 'cheerio';
 import { RadioButton } from 'react-native-paper';
-import DropDownPicker from 'react-native-dropdown-picker';
-import EasyFeedbackScreen from './EasyFeedbackScreen';
-import SimpleHeader from '../components/SimpleHeader';
 import Button from '../components/Button';
+
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 

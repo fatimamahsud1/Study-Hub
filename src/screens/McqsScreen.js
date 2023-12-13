@@ -11,11 +11,12 @@ const windowHeight = Dimensions.get('window').height;
 const McqsScreen = ({ route, navigation }) => {
   const [questions, setQuestions] = useState([]);
   const [selectedOptions, setSelectedOptions] = useState({});
-  const [shuffledQuestions, setShuffledQuestions] = useState([]);
+  const [shuffledQuestions, setShuffledQuestions] = useState([]);     
   const [userScore, setUserScore] = useState(null);
   const [correctAnswers, setCorrectAnswers] = useState({});
   const [timer, setTimer] = useState({ minutes: 0, seconds: 0 });
   const [feedbackData, setFeedbackData] = useState({ correct: 0, incorrect: 0 });
+
 
   const selectedTopic = route.params?.selectedTopic || 'Default Topic';
   let interval;
@@ -138,11 +139,15 @@ const McqsScreen = ({ route, navigation }) => {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerText}>Time Elapsed: {timer.minutes} minutes {timer.seconds} seconds</Text>
+        <Text style={styles.headerText}>
+          Time Elapsed: {timer.minutes} minutes {timer.seconds} seconds
+        </Text>
       </View>
       {shuffledQuestions.map((question, questionIndex) => (
         <View key={questionIndex} style={styles.questionContainer}>
-          <Text style={styles.questionText}>{`Question ${questionIndex + 1}: ${question.text}`}</Text>
+          <Text style={styles.questionText}>
+            {`Question ${questionIndex + 1}: ${question.text}`}
+          </Text>
           {question.choices.map((choice, choiceIndex) => (
             <TouchableOpacity
               key={choiceIndex}
@@ -154,20 +159,18 @@ const McqsScreen = ({ route, navigation }) => {
                       choiceIndex === question.correctIndex ? '#4CAF50' : '#FF5252',
                   },
               ]}
-              onPress={() => {
-                const newSelectedOptions = { ...selectedOptions };
-                newSelectedOptions[questionIndex] = choiceIndex;
-                setSelectedOptions(newSelectedOptions);
-              }}
+              onPress={() => handleRadioButtonPress(questionIndex, choiceIndex)}
             >
-              <RadioButton
+              <RadioButton.Android
                 value={choiceIndex}
-                status={selectedOptions[questionIndex] === choiceIndex ? 'checked' : 'unchecked'}
-                onPress={() => {
-                  const newSelectedOptions = { ...selectedOptions };
-                  newSelectedOptions[questionIndex] = choiceIndex;
-                  setSelectedOptions(newSelectedOptions);
-                }}
+                status={
+                  selectedOptions[questionIndex] === choiceIndex
+                    ? 'checked'
+                    : 'unchecked'
+                }
+                onPress={() =>
+                  handleRadioButtonPress(questionIndex, choiceIndex)
+                }
               />
               <Text style={styles.choiceText}>{`${choice}`}</Text>
             </TouchableOpacity>
@@ -175,7 +178,7 @@ const McqsScreen = ({ route, navigation }) => {
         </View>
       ))}
       <View style={styles.buttonContainer}>
-      <Button onPress={handleSubmitQuiz} text="Submit Quiz" bgColor= '#022150' />
+        <Button onPress={handleSubmitQuiz} text="Submit Quiz" bgColor="#022150" />
       </View>
     </ScrollView>
   );

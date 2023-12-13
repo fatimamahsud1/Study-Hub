@@ -92,6 +92,7 @@ const Signin = ({ navigation }) => {
             autoCapitalize="none"
             onChangeText={(text) => setEmail(text)}
             />
+            
             </View>
             </View>
             <View style={{marginTop: 1, marginHorizontal: 30}}>
