@@ -13,15 +13,47 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../firebase'; // Make sure to import your Firebase auth instance
+import { GoogleSignin, GoogleSigninButton } from 'react-native-google-signin';
 
 const Signin = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  GoogleSignin.configure();
+
   const updateSecureTextEntry = () => {
     setData({
       ...data,
       secureTextEntry: !data.secureTextEntry,
     });
+  };
+  const handleGoogleSignIn = async () => {
+    try {
+      await GoogleSignin.hasPlayServices();
+      const { idToken } = await GoogleSignin.signIn();
+      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+      await auth().signInWithCredential(googleCredential);
+    } catch (error) {
+      Alert.alert('Error', error.message);
+    }
+  };
+  const handleResetPassword = async () => {
+    if (email.trim() === '') {
+      Alert.alert('Error', 'Please enter your email address');
+      return;
+    }
+
+    const auth = getAuth();
+
+    try {
+      await sendPasswordResetEmail(auth, email);
+      Alert.alert(
+        'Password Reset Email Sent',
+        'Check your email for instructions to reset your password.'
+      );
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'Failed to send password reset email. Please try again.');
+    }
   };
   const handleSignIn = async () => {
     try {
@@ -150,30 +182,14 @@ const Signin = ({ navigation }) => {
               <Text style={{color:'#EFEFEF'}}> ----------- </Text>  Or Sign In with   <Text style={{color:'#EFEFEF'}}> ----------- </Text>
             </Text>
 
-            <View
-                style={{
-                  borderWidth: 1,
-                  borderColor: '#D8D8D8',
-                  width: '100%',
-                  height: 50,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  borderRadius: 10,
-                  marginHorizontal: 5,
-                  flexDirection: 'row',
-                  marginBottom:10, 
-                }}>
-                <Google width={23} height={23} style={{marginTop: 1}} />
-                <Text
-                  style={{
-                    marginHorizontal: 10,
-                    color: '#79869F',
-                    fontSize: 16,
-                    fontWeight:'600'
-                  }}>
-                  Sign In With Google
-                </Text>
-              </View>
+         
+                            <GoogleSigninButton
+        style={styles.googleButton}
+        size={GoogleSigninButton.Size.Wide}
+        color={GoogleSigninButton.Color.Dark}
+        onPress={handleGoogleSignIn}
+      />
+                
               <View
                 style={{
                   borderWidth: 1,
@@ -206,6 +222,13 @@ const styles = StyleSheet.create({
   text_footer: {
     color: 'black',
     fontSize: 16,
+  },
+  googleButton: {
+    width: "80%",
+    height: '15%',
+    backgroundColor: '#f2f2f2',
+    margin:15
+
   },
   action: {
     flexDirection: 'row',

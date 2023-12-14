@@ -247,13 +247,13 @@ const Signup = ({navigation}) => {
                 style={{
                   borderWidth: 1,
                   borderColor: '#D8D8D8',
-                  width: '45%',
+                  width: '55%',
                   height: 50,
                   justifyContent: 'center',
                   alignItems: 'center',
                   borderRadius: 10,
-                  marginHorizontal: 5,
                   flexDirection: 'row',
+                  marginLeft:50
                 }}>
                      <GoogleSigninButton
         style={styles.googleButton}
@@ -261,30 +261,7 @@ const Signup = ({navigation}) => {
         color={GoogleSigninButton.Color.Dark}
         onPress={handleGoogleSignIn}
       />
-                {/* <Google width={23} height={23} style={{marginTop: 1}} />
-                <Text
-                  style={{
-                    marginHorizontal: 10,
-                    color: '#282534',
-                    fontSize: 16,
-                  }}>
-                  Google
-                </Text> */}
-              </View>
-              </TouchableOpacity>
-              <View
-                style={{
-                  borderWidth: 1,
-                  borderColor: '#282534',
-                  width: '45%',
-                  height: 50,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  borderRadius: 10,
-                  marginHorizontal: 5,
-                  flexDirection: 'row',
-                }}>
-                <View
+         <View
                   style={styles.signIn}>
                   <Fb width={25} height={25} style={{marginTop: 1}} />
                   <Text
@@ -296,7 +273,18 @@ const Signup = ({navigation}) => {
                     Facebook
                   </Text>
                 </View>
+                {/* <Google width={23} height={23} style={{marginTop: 1}} />
+                <Text
+                  style={{
+                    marginHorizontal: 10,
+                    color: '#282534',
+                    fontSize: 16,
+                  }}>
+                  Google
+                </Text> */}
               </View>
+              </TouchableOpacity>
+              
             </View>
           </View>
         </ScrollView>
@@ -312,15 +300,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#022150',
   },
-  googleButton:{
-      borderWidth: 1,
-      borderColor: '#D8D8D8',
-      width: '200%',
-      height: 50,
-      justifyContent: 'center',
-      alignItems: 'center',
-      borderRadius: 10,
-      flexDirection: 'row',
+  googleButton: {
+    width: "100%",
+    height: '100%',
+    backgroundColor: '#f2f2f2',
 
   },
   header: {

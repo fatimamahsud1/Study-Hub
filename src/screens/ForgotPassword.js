@@ -1,4 +1,4 @@
-import React, {useLayoutEffect} from 'react';
+import React, {useLayoutEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -7,8 +7,11 @@ import {
   Platform,
   StyleSheet,
   ScrollView,
+  Alert,
   StatusBar,
 } from 'react-native';
+import { auth } from '../../firebase'; // Make sure to import your Firebase auth instance
+import { sendPasswordResetEmail } from 'firebase/auth';
 
 import {Icon1, Back} from '../assets/Icons';
 import * as Animatable from 'react-native-animatable';
@@ -18,6 +21,8 @@ import Feather from 'react-native-vector-icons/Feather';
 import BackgroundImage from '../components/BackgroundImage';
 const COLORS = {primary: '#282534', white: '#fff', blue: '#3E5C89'};
 const Signup = ({navigation}) => {
+  const [email, setEmail] = useState('');
+
   const [data, setData] = React.useState({
     username: '',
     password: '',
@@ -40,6 +45,24 @@ const Signup = ({navigation}) => {
         username: val,
         check_textInputChange: false,
       });
+    }
+  };
+  const handleResetPassword = async () => {
+    if (email.trim() === '') {
+      Alert.alert('Error', 'Please enter your email address');
+      return;
+    }
+
+
+    try {
+      await sendPasswordResetEmail(auth, email);
+      Alert.alert(
+        'Password Reset Email Sent',
+        'Check your email for instructions to reset your password.'
+      );
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'Failed to send password reset email. Please try again.');
     }
   };
 
@@ -101,9 +124,11 @@ const Signup = ({navigation}) => {
                 placeholder="Enter Your Email"
                 style={styles.textInput}
                 autoCapitalize="none"
-                onChangeText={val => textInputChange(val)}
-              />
-
+                value={email}
+                onChangeText={(text) => setEmail(text)}
+                />
+ 
+      
               {data.check_textInputChange ? (
                 <Animatable.View animation="bounceIn">
                   <Feather name="check-circle" color="#282534" size={26} />
@@ -114,9 +139,7 @@ const Signup = ({navigation}) => {
             <View style={styles.button}>
               <TouchableOpacity
                 style={styles.signIn}
-                onPress={() => {
-                  navigation.navigate('OPTscreen');
-                }}>
+                onPress={handleResetPassword}>
                 <View
                   style={styles.signIn}>
                   <Text
@@ -127,6 +150,27 @@ const Signup = ({navigation}) => {
                       },
                     ]}>
                     Reset Password
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.button}>
+              <TouchableOpacity
+                style={styles.signIn}
+                onPress={() => 
+                  // setIsSignIn(false) 
+                  navigation.navigate('Signin')
+                }>
+                <View
+                  style={styles.signIn}>
+                  <Text
+                    style={[
+                      styles.textSign,
+                      {
+                        color: '#fff',
+                      },
+                    ]}>
+                    Done
                   </Text>
                 </View>
               </TouchableOpacity>
